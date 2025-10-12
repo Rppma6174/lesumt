@@ -9,9 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ===== [BARU] TEMA DESAIN DARK & PURPLE ===== */
         :root {
-            --primary-purple: #8A2BE2; /* Ungu yang lebih cerah agar menonjol */
+            --primary-purple: #8A2BE2;
             --secondary-purple: #7D2ED1;
             --dark-bg: #141414;
             --card-bg: #1c1c1c;
@@ -19,90 +18,32 @@
             --text-primary: #ffffff;
             --text-secondary: #ccc;
             --text-muted: #888;
-            --locked-color: #FBC02D; /* Emas untuk item terkunci */
+            --locked-color: #FBC02D;
             --success-color: #28a745;
             --shadow-heavy: rgba(0, 0, 0, 0.5);
         }
-
-        /* ===== RESET & GAYA DASAR BARU ===== */
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        *:focus {
-            outline: none !important;
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-        }
-
-        /* ===== [BARU] GAYA HALAMAN LOGIN ===== */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *:focus { outline: none !important; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background-color: var(--dark-bg); color: var(--text-primary); }
         #login-container { display: flex; align-items: center; justify-content: center; height: 100vh; padding: 20px; }
-        .login-card {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 15px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 10px 30px var(--shadow-heavy);
-            width: 100%;
-            max-width: 400px;
-        }
+        .login-card { background: var(--card-bg); padding: 40px; border-radius: 15px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px var(--shadow-heavy); width: 100%; max-width: 400px; }
         .login-card h1 { text-align: center; color: var(--primary-purple); font-weight: 700; margin-top: 0; }
         .input-group { margin-bottom: 25px; }
         .input-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 14px; font-weight: 500; }
-        .input-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-            font-size: 16px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .input-group input:focus {
-            border-color: var(--primary-purple);
-            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.3);
-        }
+        .input-group input { width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 8px; background-color: var(--dark-bg); color: var(--text-primary); font-size: 16px; transition: border-color 0.3s, box-shadow 0.3s; }
+        .input-group input:focus { border-color: var(--primary-purple); box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.3); }
         #login-error { color: #ff6b6b; text-align: center; margin-top: 15px; font-size: 14px; min-height: 20px; }
-        
-        /* ===== GAYA APLIKASI UTAMA BARU ===== */
         #app-container { display: none; }
-        .app-container {
-            max-width: 450px;
-            margin: 0 auto;
-            background-color: var(--dark-bg);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            padding-bottom: 70px;
-        }
+        .app-container { max-width: 450px; margin: 0 auto; background-color: var(--dark-bg); min-height: 100vh; display: flex; flex-direction: column; position: relative; padding-bottom: 70px; }
         .content { flex-grow: 1; overflow-y: auto; padding: 20px; }
         .page { display: none; }
         .page.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .page-title { color: var(--text-primary); font-size: 28px; font-weight: 700; margin-bottom: 25px; }
         .card { background-color: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: none; border: 1px solid var(--border-color); margin-bottom: 20px; }
-        .cta-button {
-            display: block; width: 100%; padding: 15px;
-            background-color: var(--primary-purple);
-            color: var(--text-primary);
-            border: none; border-radius: 8px;
-            font-size: 16px; font-weight: 600; text-align: center;
-            cursor: pointer; text-decoration: none; transition: all 0.3s ease;
-        }
-        .cta-button:hover {
-            background-color: var(--secondary-purple);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
-        }
+        .cta-button { display: block; width: 100%; padding: 15px; background-color: var(--primary-purple); color: var(--text-primary); border: none; border-radius: 8px; font-size: 16px; font-weight: 600; text-align: center; cursor: pointer; text-decoration: none; transition: all 0.3s ease; }
+        .cta-button:hover { background-color: var(--secondary-purple); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4); }
         .cta-button:disabled { background-color: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; }
-        
-        /* --- [BARU] GAYA HALAMAN LES --- */
         .subject-card { background-color: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; overflow: hidden; }
         .subject-header { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .subject-header h3 { margin: 0; color: var(--primary-purple); font-weight: 600; }
@@ -113,19 +54,16 @@
         .sub-materi-header { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s; }
         .sub-materi-item:not(.locked):hover .sub-materi-header { background-color: #3a3a3a; }
         .sub-materi-item.locked .sub-materi-header { cursor: pointer; opacity: 0.7; }
-        .sub-materi-header span:first-child { font-weight: 500; }
-        .sub-materi-header span:last-child { font-weight: 700; font-size: 18px; }
-        .sub-materi-item.locked .sub-materi-header span:last-child { color: var(--locked-color); }
-        .sub-materi-item:not(.locked) .sub-materi-header span:last-child { color: var(--success-color); }
-
-        /* --- [BARU] GAYA NAVIGASI BAWAH --- */
+        .sub-materi-header .title { font-weight: 500; }
+        .sub-materi-header .status { display: flex; align-items: center; font-weight: 700; font-size: 18px; }
+        .sub-materi-item.locked .status { color: var(--locked-color); }
+        .sub-materi-item:not(.locked) .status { color: var(--success-color); }
+        .score-badge { font-size: 14px; font-weight: 700; color: var(--primary-purple); margin-right: 8px; }
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); max-width: 450px; width: 100%; height: 65px; background-color: var(--card-bg); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border-color); }
         .nav-button { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); transition: color 0.3s; }
         .nav-button svg { width: 24px; height: 24px; }
         .nav-button span { font-size: 12px; }
         .nav-button.active { color: var(--primary-purple); }
-
-        /* --- [BARU] GAYA POP-UP MODAL --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; z-index: 1000; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal-content { background-color: var(--card-bg); padding: 30px; border-radius: 15px; border: 1px solid var(--border-color); box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5); width: 90%; max-width: 400px; text-align: center; transform: scale(0.9); transition: transform 0.3s; }
@@ -134,6 +72,12 @@
         .modal-content p { color: var(--text-secondary); margin-bottom: 25px; }
         .modal-footer { display: flex; gap: 10px; margin-top: 20px; }
         .modal-footer .cta-button { flex: 1; }
+        .progress-item { margin-bottom: 15px; }
+        .progress-item:last-child { margin-bottom: 0; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: var(--text-secondary); }
+        .progress-bar-bg { background-color: var(--dark-bg); border-radius: 5px; height: 10px; overflow: hidden; border: 1px solid var(--border-color); }
+        .progress-bar-fill { background-color: var(--primary-purple); height: 100%; border-radius: 5px; transition: width 0.5s ease-in-out; }
+        #mentor-message-text { font-style: italic; color: var(--text-secondary); }
     </style>
 </head>
 <body>
@@ -141,30 +85,19 @@
     <div id="login-container">
         <div class="login-card">
             <h1>Platform Belajar</h1>
-            <form id="login-form">
-                <div class="input-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                <div class="input-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <button type="submit" class="cta-button" id="login-button">Login</button>
-                <p id="login-error"></p>
-            </form>
+            <form id="login-form"><div class="input-group"><label for="username">Username</label><input type="text" id="username" name="username" required></div><div class="input-group"><label for="password">Password</label><input type="password" id="password" name="password" required></div><button type="submit" class="cta-button" id="login-button">Login</button><p id="login-error"></p></form>
         </div>
     </div>
 
     <div class="app-container" id="app-container">
         <div class="content">
-            <main class="page active" id="dashboard-page"><h1 class="page-title" id="welcome-message">Selamat Datang!</h1><div class="card"><h3>Progres Belajar Anda</h3><div id="dashboard-progress-container"></div></div></main>
+            <main class="page active" id="dashboard-page"><h1 class="page-title" id="welcome-message">Selamat Datang!</h1><div class="card"><h3>Progres Belajar Anda</h3><div id="dashboard-progress-container"></div></div><div class="card"><h3>Pesan dari Mentor</h3><p id="mentor-message-text">Tidak ada pesan baru saat ini.</p></div></main>
             <main class="page" id="les-page"><h1 class="page-title">Materi Belajar</h1><div id="subjects-container"></div></main>
             <main class="page" id="profil-page"><h1 class="page-title">Profil Saya</h1><div class="card"><p><strong>Nama Lengkap:</strong> <span id="profile-name"></span></p><p><strong>Username:</strong> <span id="profile-username"></span></p></div></main>
             <main class="page" id="bantuan-page"><h1 class="page-title">Pusat Bantuan</h1><div class="card"><p>Hubungi saya jika ada kesulitan.</p></div></main>
         </div>
         <nav class="bottom-nav">
-             <button class="nav-button active" data-target="dashboard-page"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg><span>Dashboard</span></button>
+            <button class="nav-button active" data-target="dashboard-page"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg><span>Dashboard</span></button>
             <button class="nav-button" data-target="les-page"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path></svg><span>Les</span></button>
             <button class="nav-button" data-target="profil-page"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg><span>Profil</span></button>
             <button class="nav-button" data-target="bantuan-page"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg><span>Bantuan</span></button>
@@ -184,30 +117,30 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // --- KONFIGURASI PENTING ---
-    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzJ5l7uoUa1CVa25qmUVyRnxHye-ZrN1C8Nhlo71uUUWcczeyF3qeiC1OOvimhJ_20/exec";
-    const NO_WHATSAPP_PENGAJAR = "6285961160545"; // GANTI DENGAN NOMOR WA ANDA
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwtP8HaiUAQdEPuxKh-hQ9_3WlN0MHgaLtidS1XJykKU1tFmvF1exfdrgaZJY1rCs/exec";
+    const NO_WHATSAPP_PENGAJAR = "6285961160545";
 
+    // --- [DIPERBARUI] STRUKTUR DATA DENGAN ID UNIK ---
     const allSubjects = {
         logaritma: { 
             name: "Logaritma", 
             subMateri: [ 
-                { title: "1. Sifat Dasar Logaritma", url: "materi/log-01.html" }, 
-                { title: "2. Persamaan Logaritma", url: "materi/log-02.html" }, 
-                { title: "3. Pertidaksamaan Logaritma", url: "materi/log-03.html" } 
-                ] 
-            },
+                { id: "log_1", title: "1. Sifat Dasar Logaritma", url: "materi/log-01.html" }, 
+                { id: "log_2", title: "2. Persamaan Logaritma", url: "materi/log-02.html" }, 
+                { id: "log_3", title: "3. Pertidaksamaan Logaritma", url: "materi/log-03.html" } 
+            ] 
+        },
         fungsi_kuadrat: { 
             name: "Fungsi Kuadrat", 
             subMateri: [ 
-                { title: "1. Pengertian dan Grafik", url: "materi/fk-01.html" }, 
-                { title: "2. Sumbu Simetri & Nilai Optimum", url: "materi/fk-02.html" } 
+                { id: "fk_1", title: "1. Pengertian dan Grafik", url: "materi/fk-01.html" }, 
+                { id: "fk_2", title: "2. Sumbu Simetri & Nilai Optimum", url: "materi/fk-02.html" } 
             ] 
-        },
+        }
     };
     
     let appState = { loggedInUser: null, userProgress: null };
-    let currentlyPreparedWaLink = ""; 
+    let currentlyPreparedWaLink = "";
 
     const loginContainer = document.getElementById('login-container');
     const appContainer = document.getElementById('app-container');
@@ -219,8 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const loginButton = document.getElementById('login-button');
-        loginButton.disabled = true;
-        loginButton.textContent = "Loading...";
+        loginButton.disabled = true; loginButton.textContent = "Loading...";
         document.getElementById('login-error').textContent = "";
         const payload = { action: "login", username: loginForm.username.value, password: loginForm.password.value };
         fetch(GAS_WEB_APP_URL, { method: 'POST', redirect: "follow", body: JSON.stringify(payload) })
@@ -229,8 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             else { throw new Error(result.message); }
         }).catch(err => {
             document.getElementById('login-error').textContent = err.message || "Gagal terhubung.";
-            loginButton.disabled = false;
-            loginButton.textContent = "Login";
+            loginButton.disabled = false; loginButton.textContent = "Login";
         });
     });
 
@@ -245,23 +176,18 @@ document.addEventListener('DOMContentLoaded', () => {
         appContainer.style.display = 'flex';
         setupUserInfo();
         renderSubjects();
+        renderDashboard();
+        renderMentorMessage();
         setupNavigation();
     }
     
-    function showPermissionModal(waLink) {
-        currentlyPreparedWaLink = waLink;
-        modal.classList.add('active');
-    }
-    function hidePermissionModal() {
-        modal.classList.remove('active');
-    }
+    function showPermissionModal(waLink) { currentlyPreparedWaLink = waLink; modal.classList.add('active'); }
+    function hidePermissionModal() { modal.classList.remove('active'); }
     closeModalBtn.addEventListener('click', hidePermissionModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) { hidePermissionModal(); } });
     
     requestWhatsappBtn.addEventListener('click', () => {
-        if (currentlyPreparedWaLink) {
-            window.open(currentlyPreparedWaLink, '_blank');
-        }
+        if (currentlyPreparedWaLink) { window.open(currentlyPreparedWaLink, '_blank'); }
         hidePermissionModal();
     });
 
@@ -271,30 +197,65 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('profile-username').textContent = appState.loggedInUser.username;
     }
 
+    function renderDashboard() {
+        const container = document.getElementById('dashboard-progress-container');
+        if (!container) return;
+        container.innerHTML = "";
+        for (const subjectKey in allSubjects) {
+            if (appState.userProgress.hasOwnProperty(allSubjects[subjectKey].subMateri[0].id)) {
+                const subjectInfo = allSubjects[subjectKey];
+                const totalSubMateri = subjectInfo.subMateri.length;
+                let materiSelesai = 0;
+                subjectInfo.subMateri.forEach(sub => {
+                    if (appState.userProgress[sub.id] !== undefined && appState.userProgress[sub.id] !== "") {
+                        materiSelesai++;
+                    }
+                });
+                const percentage = totalSubMateri > 0 ? (materiSelesai / totalSubMateri) * 100 : 0;
+                container.innerHTML += `<div class="progress-item"><div class="progress-label"><span>${subjectInfo.name}</span><span>${materiSelesai} / ${totalSubMateri} Materi</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${percentage}%;"></div></div></div>`;
+            }
+        }
+    }
+    
+    function renderMentorMessage() {
+        const messageElement = document.getElementById('mentor-message-text');
+        if (!messageElement) return;
+        const message = appState.userProgress.pesan_mentor;
+        if (message && message.trim() !== "") {
+            messageElement.textContent = message;
+            messageElement.style.fontStyle = 'normal';
+        } else {
+            messageElement.textContent = "Tidak ada pesan baru saat ini.";
+            messageElement.style.fontStyle = 'italic';
+        }
+    }
+
     function renderSubjects() {
         const container = document.getElementById('subjects-container');
         container.innerHTML = "";
         for (const subjectKey in allSubjects) {
             const subject = allSubjects[subjectKey];
-            const maxUnlockedIndex = appState.userProgress[subjectKey] || 0;
             let subMateriHTML = "";
 
             subject.subMateri.forEach((sub, index) => {
-                const isLocked = index > maxUnlockedIndex;
+                let isLocked = true;
+                if (index === 0) { isLocked = false; } 
+                else {
+                    const prevSubMateriId = subject.subMateri[index - 1].id;
+                    if (appState.userProgress[prevSubMateriId] !== undefined && appState.userProgress[prevSubMateriId] !== "") {
+                        isLocked = false;
+                    }
+                }
+                const score = appState.userProgress[sub.id];
+                let scoreDisplay = "";
+                if (score !== undefined && score !== "") {
+                    scoreDisplay = `<span class="score-badge">${score}%</span>`;
+                }
                 const tag = isLocked ? 'div' : 'a';
                 const href = isLocked ? '' : `href="${sub.url}"`;
-                const ikon = isLocked ? '🔒' : '✔️'; // Ganti ✅ dengan ✔️ untuk konsistensi font
-                
-                subMateriHTML += `
-                    <${tag} ${href} class="sub-materi-item ${isLocked ? 'locked' : ''}" data-title="${sub.title}">
-                        <div class="sub-materi-header">
-                            <span>${sub.title}</span>
-                            <span>${ikon}</span>
-                        </div>
-                    </${tag}>
-                `;
+                const ikon = isLocked ? '🔒' : '✔️';
+                subMateriHTML += `<${tag} ${href} class="sub-materi-item ${isLocked ? 'locked' : ''}" data-title="${sub.title}"><div class="sub-materi-header"><span class="title">${sub.title}</span><span class="status">${scoreDisplay}${ikon}</span></div></${tag}>`;
             });
-
             const subjectCardHTML = `<div class="subject-card"><div class="subject-header"><h3>${subject.name}</h3><span class="chevron">▼</span></div><div class="sub-materi-container">${subMateriHTML}</div></div>`;
             container.innerHTML += subjectCardHTML;
         }
@@ -310,19 +271,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 content.style.display = content.style.display === 'block' ? 'none' : 'block';
             });
         });
-        
-        document.querySelectorAll('.sub-materi-item').forEach(item => {
-            if (item.classList.contains('locked')) {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const studentName = appState.loggedInUser.fullName;
-                    const materiTitle = item.dataset.title;
-                    const pesanWa = `Halo, saya ${studentName}, ingin meminta izin untuk membuka materi: "${materiTitle}"`;
-                    const encodedPesan = encodeURIComponent(pesanWa);
-                    const linkWa = `https://wa.me/${NO_WHATSAPP_PENGAJAR}?text=${encodedPesan}`;
-                    showPermissionModal(linkWa);
-                });
-            }
+        document.querySelectorAll('.sub-materi-item.locked').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const studentName = appState.loggedInUser.fullName;
+                const materiTitle = item.dataset.title;
+                const pesanWa = `Halo, saya ${studentName}, ingin meminta izin untuk membuka materi: "${materiTitle}"`;
+                const encodedPesan = encodeURIComponent(pesanWa);
+                const linkWa = `https://wa.me/${NO_WHATSAPP_PENGAJAR}?text=${encodedPesan}`;
+                showPermissionModal(linkWa);
+            });
         });
     }
 
