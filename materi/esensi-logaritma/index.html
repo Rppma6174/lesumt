@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Belajar: Sifat Dasar Logaritma</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #8A2BE2;
+            --dark-bg: #141414;
+            --card-bg: #1c1c1c;
+            --border-color: #333;
+            --text-primary: #ffffff;
+            --text-secondary: #ccc;
+            --success-color: #28a745;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            text-align: center;
+        }
+        .header h1 { color: var(--primary-purple); margin-bottom: 5px; }
+        .roadmap-container { position: relative; max-width: 600px; margin: 0 auto; }
+        .roadmap-container::before { content: ''; position: absolute; top: 20px; left: 19px; height: calc(100% - 40px); width: 2px; background-color: var(--border-color); }
+        .roadmap-stage { display: flex; align-items: center; margin-bottom: 25px; text-decoration: none; color: inherit; }
+        .stage-dot { position: relative; z-index: 1; flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background-color: var(--card-bg); border: 2px solid var(--border-color); display: flex; justify-content: center; align-items: center; font-weight: 700; transition: all 0.3s ease; }
+        .stage-content { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px 20px; flex-grow: 1; margin-left: 20px; transition: all 0.3s ease; }
+        .stage-content h3 { margin: 0 0 5px 0; font-size: 18px; }
+        .stage-content p { margin: 0; font-size: 14px; color: var(--text-secondary); }
+        .roadmap-stage.completed .stage-dot { background-color: var(--success-color); border-color: var(--success-color); color: white; }
+        .roadmap-stage.completed .stage-content { border-color: var(--success-color); }
+        .roadmap-stage.active .stage-dot { border-color: var(--primary-purple); }
+        .roadmap-stage.active .stage-content { border-color: var(--primary-purple); transform: scale(1.02); }
+        .roadmap-stage.active:hover .stage-content { background-color: #2a2a2a; }
+        .roadmap-stage.locked { pointer-events: none; opacity: 0.5; }
+
+        /* ===== [BARU] GAYA UNTUK TOMBOL KEMBALI MENGAMBANG ===== */
+        .floating-back-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 55px;
+            height: 55px;
+            background-color: var(--primary-purple);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        .floating-back-btn:hover {
+            transform: scale(1.1);
+            background-color: var(--secondary-purple);
+        }
+        .floating-back-btn svg {
+            width: 28px;
+            height: 28px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Sifat Dasar Logaritma</h1>
+        <p>Selesaikan semua tahapan di bawah ini untuk menguasai materi.</p>
+    </div>
+
+    <div class="roadmap-container" id="roadmap">
+        </div>
+
+    <a href="../" class="floating-back-btn" title="Kembali ke Daftar Materi">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+        </svg>
+    </a>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Kunci unik untuk sub-materi ini di localStorage
+    const SUB_MATERI_ID = "log_1";
+
+    // Definisikan 5 tahapan untuk sub-materi ini
+    const stages = [
+        { id: "materi", title: "Pahami Materi", description: "Baca materi dasar terlebih dahulu.", url: "log-01-materi.html" },
+        { id: "latihan1", title: "Latihan 1", description: "Uji pemahaman awal.", url: "log-01-latihan1.html" },
+        { id: "latihan2", title: "Latihan 2", description: "Latihan tingkat menengah.", url: "log-01-latihan2.html" },
+        { id: "latihan3", title: "Latihan 3", description: "Latihan tingkat lanjut.", url: "log-01-latihan3.html" },
+        { id: "ujian", title: "Uji Langsung", description: "Ujian akhir untuk sub-materi ini.", url: "log-01-ujian.html" }
+    ];
+
+    const roadmapContainer = document.getElementById('roadmap');
+
+    function renderRoadmap() {
+        roadmapContainer.innerHTML = ""; // Kosongkan
+        let isPrevStageCompleted = true; // Anggap "start" sudah selesai
+
+        stages.forEach((stage, index) => {
+            const storageKey = `progress_${SUB_MATERI_ID}_${stage.id}`;
+            const isCompleted = localStorage.getItem(storageKey) === 'completed';
+            
+            let stageClass = '';
+            let isLocked = false;
+            
+            if (isCompleted) {
+                stageClass = 'completed';
+            } else if (isPrevStageCompleted) {
+                stageClass = 'active'; // Tahapan saat ini yang bisa dikerjakan
+            } else {
+                stageClass = 'locked';
+                isLocked = true;
+            }
+
+            const stageHTML = `
+                <a href="${isLocked ? '#' : stage.url}" class="roadmap-stage ${stageClass}">
+                    <div class="stage-dot">
+                        ${isCompleted ? '✔️' : (isLocked ? '🔒' : index + 1)}
+                    </div>
+                    <div class="stage-content">
+                        <h3>${stage.title}</h3>
+                        <p>${stage.description}</p>
+                    </div>
+                </a>
+            `;
+            roadmapContainer.innerHTML += stageHTML;
+
+            // Update status untuk iterasi selanjutnya
+            if (!isCompleted) {
+                isPrevStageCompleted = false;
+            }
+        });
+    }
+
+    renderRoadmap();
+});
+</script>
+
+</body>
+</html>
