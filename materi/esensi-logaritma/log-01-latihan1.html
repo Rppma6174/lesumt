@@ -129,10 +129,15 @@
         .modal-footer .close-btn { background-color: var(--primary-purple); color: white; width: 100%; }
         .modal-footer .close-btn:hover { background-color: #7D2ED1; }
 
-        /* Warning Modal */
         .warning-icon {
             font-size: 4rem;
             color: var(--warning-color);
+            margin-bottom: 1rem;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success-color);
             margin-bottom: 1rem;
         }
 
@@ -199,6 +204,25 @@
         </div>
     </div>
 
+    <!-- Modal Sukses Selesai -->
+    <div id="success-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="success-icon">🎉</div>
+            <h3>Selamat! Latihan Selesai</h3>
+            <p>Jawaban Anda telah berhasil dikirim. Progress Anda telah disimpan dan tahapan berikutnya sudah terbuka.</p>
+            <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px;">Unduh soal dalam bentuk PDF untuk referensi belajar Anda.</p>
+            <div class="modal-footer" style="flex-direction: column;">
+                <button id="download-pdf-modal-btn" style="background-color: var(--primary-purple); color: white; width: 100%; margin-bottom: 10px;">
+                    <i class="fas fa-download"></i> Unduh Soal (PDF)
+                </button>
+                <button id="skip-to-roadmap-btn" style="background-color: var(--success-color); color: white; width: 100%;">
+                    Lanjut ke Roadmap
+                </button>
+            </div>
+            <p id="countdown-text" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 15px;">Atau tunggu <span id="countdown">10</span> detik...</p>
+        </div>
+    </div>
+
     <div class="container">
         <a id="back-link" class="back-link" title="Kembali ke Daftar Materi">
             <i class="fas fa-arrow-left"></i>
@@ -252,16 +276,18 @@
         </div>
 
         <button id="submit-button" class="submit-button">Kirim Jawaban</button>
-        <button id="download-button" class="download-button">
-            <i class="fas fa-download"></i> Unduh Soal (PDF)
-        </button>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // ============ KONFIGURASI PROGRESS ============
+            const SUB_MATERI_ID = "log_1";  // ID sub-materi ini
+            const CURRENT_STAGE_ID = "latihan1";  // ID stage saat ini
+            const ROADMAP_PATH = "../esensi-logaritma/";  // Path ke halaman roadmap
+            // ==============================================
+
             const fileInputs = document.querySelectorAll('.file-upload-input');
             const submitButton = document.getElementById('submit-button');
-            const downloadButton = document.getElementById('download-button');
             const confirmationModal = document.getElementById('confirmation-modal');
             const confirmSubmitBtn = document.getElementById('confirm-submit-btn');
             const cancelSubmitBtn = document.getElementById('cancel-submit-btn');
@@ -269,10 +295,15 @@
             const closeWarningBtn = document.getElementById('close-warning-btn');
             const backWarningModal = document.getElementById('back-warning-modal');
             const closeBackWarningBtn = document.getElementById('close-back-warning-btn');
+            const successModal = document.getElementById('success-modal');
+            const downloadPdfModalBtn = document.getElementById('download-pdf-modal-btn');
+            const skipToRoadmapBtn = document.getElementById('skip-to-roadmap-btn');
+            const countdownElement = document.getElementById('countdown');
             const backLink = document.getElementById('back-link');
             const toast = document.getElementById('toast');
             
             let isSubmitted = false;
+            let countdownInterval = null;
 
             // Tutup modal peringatan awal
             closeWarningBtn.addEventListener('click', () => {
@@ -309,7 +340,7 @@
                 if (!isSubmitted) {
                     backWarningModal.classList.add('active');
                 } else {
-                    window.location.href = '../index.html';
+                    window.location.href = ROADMAP_PATH;
                 }
             });
 
@@ -359,6 +390,13 @@
             // Helper function untuk delay
             function delay(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            // Fungsi untuk menyimpan progress ke localStorage
+            function markStageCompleted() {
+                const storageKey = `progress_${SUB_MATERI_ID}_${CURRENT_STAGE_ID}`;
+                localStorage.setItem(storageKey, 'completed');
+                console.log(`Progress saved: ${storageKey} = completed`);
             }
 
             // Fungsi kirim ke Telegram
@@ -429,17 +467,37 @@
                         })
                     });
 
-                    showNotification('Jawaban berhasil dikirim ke Telegram!', 'success');
+                    // SIMPAN PROGRESS
+                    markStageCompleted();
+
+                    // Tampilkan modal sukses
                     submitButton.disabled = false;
                     submitButton.textContent = 'Kirim Jawaban';
                     isSubmitted = true;
-                    downloadButton.classList.add('show');
                     
+                    // Reset form
                     fileInputs.forEach(input => {
                         input.value = '';
                         const fileNameDisplay = input.nextElementSibling;
                         fileNameDisplay.textContent = 'Belum ada file dipilih';
                     });
+
+                    // Tampilkan modal sukses
+                    successModal.classList.add('active');
+                    
+                    // Mulai countdown 10 detik
+                    let countdown = 10;
+                    countdownElement.textContent = countdown;
+                    
+                    countdownInterval = setInterval(() => {
+                        countdown--;
+                        countdownElement.textContent = countdown;
+                        
+                        if (countdown <= 0) {
+                            clearInterval(countdownInterval);
+                            window.location.href = ROADMAP_PATH;
+                        }
+                    }, 1000);
 
                 } catch (error) {
                     console.error('Error:', error);
@@ -450,7 +508,7 @@
             }
 
             // Fungsi Download PDF
-            downloadButton.addEventListener('click', async () => {
+            function generatePDF() {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 
@@ -528,6 +586,17 @@
                 
                 doc.save('Latihan-Soal-1-Esensi-Logaritma.pdf');
                 showNotification('PDF berhasil diunduh!', 'success');
+            }
+
+            // Tombol download di modal
+            downloadPdfModalBtn.addEventListener('click', () => {
+                generatePDF();
+            });
+
+            // Tombol skip langsung ke roadmap
+            skipToRoadmapBtn.addEventListener('click', () => {
+                clearInterval(countdownInterval);
+                window.location.href = ROADMAP_PATH;
             });
         });
     </script>
