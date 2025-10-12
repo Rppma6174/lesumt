@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Platform Belajar</title>
-    
     <style>
         :root {
             --primary-color: #007BFF;
@@ -14,12 +13,9 @@
             --text-color: #333333;
             --text-light: #f8f9fa;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --locked-color: #ffc107;
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            background-color: #e0e0e0;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #e0e0e0; }
         #login-container { display: flex; align-items: center; justify-content: center; height: 100vh; }
         .login-card { background: var(--card-background); padding: 30px; border-radius: 12px; box-shadow: var(--shadow); width: 100%; max-width: 350px; box-sizing: border-box; }
         .login-card h1 { text-align: center; color: var(--primary-color); }
@@ -46,19 +42,13 @@
         .sub-materi-item { background-color: #f8f9fa; border-radius: 8px; margin-bottom: 10px; overflow: hidden; display: block; text-decoration: none; color: inherit; transition: background-color 0.2s; }
         .sub-materi-item:not(.locked):hover { background-color: #e9ecef; }
         .sub-materi-header { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .sub-materi-item.locked .sub-materi-header { opacity: 0.6; cursor: not-allowed; }
+        .sub-materi-item.locked .sub-materi-header { cursor: pointer; background-color: #fff9e6; border: 1px solid var(--locked-color); }
+        .sub-materi-item.locked .sub-materi-header span:first-child { color: #856404; }
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); max-width: 450px; width: 100%; height: 65px; background-color: var(--card-background); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); border-top-left-radius: 20px; border-top-right-radius: 20px; }
         .nav-button { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--secondary-color); transition: color 0.3s; }
         .nav-button svg { width: 24px; height: 24px; }
         .nav-button span { font-size: 12px; }
         .nav-button.active { color: var(--primary-color); }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; z-index: 1000; }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content { background-color: var(--card-background); padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 400px; text-align: center; transform: scale(0.9); transition: transform 0.3s; }
-        .modal-overlay.active .modal-content { transform: scale(1); }
-        .modal-content h3 { margin-top: 0; color: var(--primary-color); }
-        .modal-footer { display: flex; gap: 10px; margin-top: 20px; }
-        .modal-footer .cta-button { flex: 1; }
     </style>
 </head>
 <body>
@@ -86,8 +76,8 @@
             <main class="page active" id="dashboard-page">
                 <h1 class="page-title" id="welcome-message">Selamat Datang!</h1>
                 <div class="card">
-                     <h3>Progres Belajar Anda</h3>
-                     <div id="dashboard-progress-container"></div>
+                    <h3>Progres Belajar Anda</h3>
+                    <div id="dashboard-progress-container"></div>
                 </div>
             </main>
             <main class="page" id="les-page">
@@ -102,107 +92,80 @@
                 </div>
             </main>
             <main class="page" id="bantuan-page">
-                 <h1 class="page-title">Pusat Bantuan</h1>
+                <h1 class="page-title">Pusat Bantuan</h1>
                 <div class="card">
                     <p>Hubungi saya jika ada kesulitan.</p>
                 </div>
             </main>
         </div>
         <nav class="bottom-nav">
-            <button class="nav-button active" data-target="dashboard-page"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg><span>Dashboard</span></button>
+             <button class="nav-button active" data-target="dashboard-page"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg><span>Dashboard</span></button>
             <button class="nav-button" data-target="les-page"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path></svg><span>Les</span></button>
             <button class="nav-button" data-target="profil-page"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg><span>Profil</span></button>
             <button class="nav-button" data-target="bantuan-page"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg><span>Bantuan</span></button>
         </nav>
     </div>
 
-    <div id="permission-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div id="modal-initial-view">
-                <h3>Akses Terkunci</h3>
-                <p>Anda belum memiliki akses untuk melanjutkan ke bab ini. Minta pengajar untuk mengizinkannya sesuai dengan klasifikasi Anda jika sudah paham di materi sebelumnya berdasarkan penilaian pengajar.</p>
-                <div class="modal-footer">
-                    <button id="close-modal-btn" class="cta-button" style="background-color: var(--secondary-color);">Tutup</button>
-                    <button id="request-access-btn" class="cta-button">Minta Izin</button>
-                </div>
-            </div>
-            <div id="modal-success-view" style="display: none;">
-                <h3>Berhasil!</h3>
-                <p>Permintaan Anda telah dikirim ke pengajar. Mohon tunggu konfirmasinya ya.</p>
-            </div>
-        </div>
-    </div>
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // --- KONFIGURASI ---
-    // PENTING! Ganti dengan URL BARU dari deployment Apps Script terbaru Anda.
-    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxevj9kCnT_5BgEfaifJYYN4Yh2HyqSAC70h8EQDqqLiVwZEVZK_tvtVWG28vk1SlU/exec";
+    // --- KONFIGURASI PENTING ---
+    // 1. Ganti dengan URL BARU dari deployment Apps Script terbaru Anda.
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzJ5l7uoUa1CVa25qmUVyRnxHye-ZrN1C8Nhlo71uUUWcczeyF3qeiC1OOvimhJ_20/exec";
+    // 2. Ganti dengan nomor WhatsApp Anda (Format 62, tanpa + atau 0 di depan).
+    const NO_WHATSAPP_PENGAJAR = "6285961160545"; 
 
     // --- STRUKTUR DATA MATERI ---
-    // Ganti '...' dengan path file HTML materi Anda yang sebenarnya.
+    // Pastikan path 'url' ini sesuai dengan lokasi file materi Anda.
     const allSubjects = {
-        logaritma: {
-            name: "Logaritma",
-            subMateri: [
-                { title: "1. Sifat Dasar Logaritma", url: "materi/log-01.html" },
-                { title: "2. Persamaan Logaritma", url: "materi/log-02.html" },
-                { title: "3. Pertidaksamaan Logaritma", url: "materi/log-03.html" }
-            ]
+        logaritma: { 
+            name: "Logaritma", 
+            subMateri: [ 
+                { title: "1. Sifat Dasar Logaritma", url: "materi/log-01.html" }, 
+                { title: "2. Persamaan Logaritma", url: "materi/log-02.html" }, 
+                { title: "3. Pertidaksamaan Logaritma", url: "materi/log-03.html" } 
+            ] 
         },
-        fungsi_kuadrat: {
-            name: "Fungsi Kuadrat",
-            subMateri: [
-                { title: "1. Pengertian dan Grafik", url: "materi/fk-01.html" },
-                { title: "2. Sumbu Simetri & Nilai Optimum", url: "materi/fk-02.html" },
-            ]
+        fungsi_kuadrat: { 
+            name: "Fungsi Kuadrat", 
+            subMateri: [ 
+                { title: "1. Pengertian dan Grafik", url: "materi/fk-01.html" }, 
+                { title: "2. Sumbu Simetri & Nilai Optimum", url: "materi/fk-02.html" } 
+            ] 
         }
     };
     
     // --- APLICATION STATE ---
     let appState = { loggedInUser: null, userProgress: null };
-    let currentlyRequestedMateri = null;
 
     // --- Elemen DOM ---
     const loginContainer = document.getElementById('login-container');
     const appContainer = document.getElementById('app-container');
     const loginForm = document.getElementById('login-form');
-    const loginButton = document.getElementById('login-button');
-    const loginError = document.getElementById('login-error');
-    const modal = document.getElementById('permission-modal');
-    const closeModalBtn = document.getElementById('close-modal-btn');
-    const requestAccessBtn = document.getElementById('request-access-btn');
-    const modalInitialView = document.getElementById('modal-initial-view');
-    const modalSuccessView = document.getElementById('modal-success-view');
     
     // --- LOGIKA LOGIN ---
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        const loginButton = document.getElementById('login-button');
         loginButton.disabled = true;
         loginButton.textContent = "Loading...";
-        loginError.textContent = "";
-        const payload = {
-            action: "login",
-            username: loginForm.username.value,
-            password: loginForm.password.value
-        };
-        fetch(GAS_WEB_APP_URL, {
-            method: 'POST',
-            redirect: "follow",
-            body: JSON.stringify(payload)
+        document.getElementById('login-error').textContent = "";
+        const payload = { action: "login", username: loginForm.username.value, password: loginForm.password.value };
+        fetch(GAS_WEB_APP_URL, { 
+            method: 'POST', 
+            redirect: "follow", 
+            body: JSON.stringify(payload) 
         })
         .then(res => res.json())
         .then(result => {
-            if (result.status === "success") {
-                appState.loggedInUser = result.data;
-                initializeApp();
-            } else {
-                throw new Error(result.message);
+            if (result.status === "success") { 
+                appState.loggedInUser = result.data; 
+                initializeApp(); 
+            } else { 
+                throw new Error(result.message); 
             }
         })
         .catch(err => {
-            console.error("Fetch Error:", err);
-            loginError.textContent = err.message || "Gagal terhubung.";
+            document.getElementById('login-error').textContent = err.message || "Gagal terhubung.";
             loginButton.disabled = false;
             loginButton.textContent = "Login";
         });
@@ -211,72 +174,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- INISIALISASI APLIKASI SETELAH LOGIN ---
     async function initializeApp() {
         try {
-            const progressResult = await fetch(`${GAS_WEB_APP_URL}?action=getProgress&user=${appState.loggedInUser.username}`).then(res => res.json());
-            if (progressResult.status === "success") {
-                appState.userProgress = progressResult.data;
-            } else { throw new Error(progressResult.message); }
-        } catch (err) {
-            alert("Gagal memuat data progres Anda. Silakan coba lagi.");
-            return;
+            const res = await fetch(`${GAS_WEB_APP_URL}?action=getProgress&user=${appState.loggedInUser.username}`);
+            const progressResult = await res.json();
+            if (progressResult.status === "success") { 
+                appState.userProgress = progressResult.data; 
+            } else { 
+                throw new Error(progressResult.message); 
+            }
+        } catch (err) { 
+            alert("Gagal memuat data progres Anda."); 
+            return; 
         }
         loginContainer.style.display = 'none';
         appContainer.style.display = 'flex';
         setupUserInfo();
         renderSubjects();
-        renderDashboard();
         setupNavigation();
     }
     
-    // --- KONTROL MODAL ---
-    function showPermissionModal(materiTitle) {
-        currentlyRequestedMateri = materiTitle;
-        modalInitialView.style.display = 'block';
-        modalSuccessView.style.display = 'none';
-        requestAccessBtn.disabled = false;
-        requestAccessBtn.textContent = "Minta Izin";
-        modal.classList.add('active');
-    }
-    function hidePermissionModal() {
-        modal.classList.remove('active');
-    }
-    closeModalBtn.addEventListener('click', hidePermissionModal);
-    modal.addEventListener('click', (e) => { if (e.target === modal) { hidePermissionModal(); } });
-    
-    // --- PERMINTAAN AKSES ---
-    requestAccessBtn.addEventListener('click', () => {
-        requestAccessBtn.disabled = true;
-        requestAccessBtn.textContent = "Mengirim...";
-        const payload = {
-            action: "requestAccess",
-            username: appState.loggedInUser.username,
-            materiTitle: currentlyRequestedMateri
-        };
-        fetch(GAS_WEB_APP_URL, {
-            method: 'POST',
-            redirect: 'follow',
-            body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === 'success') {
-                modalInitialView.style.display = 'none';
-                modalSuccessView.style.display = 'block';
-                setTimeout(hidePermissionModal, 2500);
-            } else { throw new Error(result.message); }
-        })
-        .catch(err => {
-            alert('Gagal mengirim permintaan. Coba lagi.');
-            requestAccessBtn.disabled = false;
-            requestAccessBtn.textContent = "Minta Izin";
-        });
-    });
-
     // --- RENDER & SETUP KONTEN ---
     function setupUserInfo() {
         document.getElementById('welcome-message').textContent = `Selamat Datang, ${appState.loggedInUser.fullName}!`;
         document.getElementById('profile-name').textContent = appState.loggedInUser.fullName;
         document.getElementById('profile-username').textContent = appState.loggedInUser.username;
     }
+
     function renderSubjects() {
         const container = document.getElementById('subjects-container');
         container.innerHTML = "";
@@ -284,18 +206,38 @@ document.addEventListener('DOMContentLoaded', () => {
             const subject = allSubjects[subjectKey];
             const maxUnlockedIndex = appState.userProgress[subjectKey] || 0;
             let subMateriHTML = "";
+
             subject.subMateri.forEach((sub, index) => {
                 const isLocked = index > maxUnlockedIndex;
-                const tag = isLocked ? 'div' : 'a';
-                const href = isLocked ? '' : `href="${sub.url}"`;
-                subMateriHTML += `<${tag} ${href} class="sub-materi-item ${isLocked ? 'locked' : ''}" data-title="${sub.title}"><div class="sub-materi-header"><span>${sub.title}</span><span>${isLocked ? '🔒' : '✅'}</span></div></${tag}>`;
+                const studentName = appState.loggedInUser.fullName;
+                
+                // Siapkan pesan otomatis untuk WhatsApp
+                const pesanWa = `Halo, saya ${studentName}, ingin meminta izin untuk membuka materi: "${sub.title}"`;
+                const encodedPesan = encodeURIComponent(pesanWa);
+                const linkWa = `https://wa.me/${NO_WHATSAPP_PENGAJAR}?text=${encodedPesan}`;
+
+                // Jika terkunci, link mengarah ke WhatsApp. Jika terbuka, ke file materi.
+                const href = isLocked ? linkWa : sub.url;
+                // Jika terkunci, buka di tab baru agar tidak meninggalkan aplikasi.
+                const target = isLocked ? `target="_blank"` : '';
+                const ikon = isLocked ? '💡 Minta Izin' : '✅';
+                const lockedClass = isLocked ? 'locked' : '';
+                
+                subMateriHTML += `
+                    <a href="${href}" ${target} class="sub-materi-item ${lockedClass}" data-title="${sub.title}">
+                        <div class="sub-materi-header">
+                            <span>${sub.title}</span>
+                            <span>${ikon}</span>
+                        </div>
+                    </a>
+                `;
             });
+
             const subjectCardHTML = `<div class="subject-card"><div class="subject-header"><h3>${subject.name}</h3><span class="chevron">🔽</span></div><div class="sub-materi-container">${subMateriHTML}</div></div>`;
             container.innerHTML += subjectCardHTML;
         }
         addEventListenersToSubjects();
     }
-    function renderDashboard() { /* ... */ }
 
     // --- EVENT LISTENERS DINAMIS ---
     function addEventListenersToSubjects() {
@@ -305,14 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.classList.toggle('open');
                 const content = card.querySelector('.sub-materi-container');
                 content.style.display = content.style.display === 'block' ? 'none' : 'block';
-            });
-        });
-        document.querySelectorAll('.sub-materi-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                if (item.classList.contains('locked')) {
-                    e.preventDefault();
-                    showPermissionModal(item.dataset.title);
-                }
             });
         });
     }
