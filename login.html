@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // [PENTING] Simpan data pengguna di sessionStorage
                 sessionStorage.setItem('loggedInUser', JSON.stringify(result.data));
                 // Arahkan ke halaman dashboard
-                window.location.href = 'lesumt/'; 
+                window.location.href = '/'; 
             } else {
                 throw new Error(result.message);
             }
@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
 
 
