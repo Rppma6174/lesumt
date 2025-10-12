@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tahap 1: Esensi Logaritma - UMT Learning</title>
-    <link rel="icon" type="image/png" href="../UMT-Logo - Copy.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../UMT-Logo - Copy.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,59 +14,6 @@
       MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-        <script>
-        // --- SCRIPT PENJAGA KEAMANAN ---
-        // 1. KONFIGURASI PENTING
-        const subMateriId = 'log_1'; // ID UNIK UNTUK HALAMAN INI
-        const GAS_WEB_APP_URL = "GANTI_DENGAN_URL_APPS_SCRIPT_TERBARU_ANDA";
-
-        // 2. FUNGSI PENJAGA UTAMA (jangan diubah)
-        (async function securePage() {
-            document.body.style.display = 'none'; // Sembunyikan konten dulu
-            const loggedInUserData = sessionStorage.getItem('loggedInUser');
-            if (!loggedInUserData) {
-                alert("Akses ditolak. Silakan login terlebih dahulu.");
-                window.location.href = 'login.html'; // Path kembali ke login
-                return;
-            }
-            const user = JSON.parse(loggedInUserData);
-            try {
-                const res = await fetch(`${GAS_WEB_APP_URL}?action=getProgress&user=${user.username}`);
-                const progressResult = await res.json();
-                if (progressResult.status !== "success") throw new Error("Gagal memverifikasi progres.");
-                
-                const userProgress = progressResult.data;
-                let hasAccess = false;
-                
-                // Objek ini harus sama persis dengan yang ada di inde
-                const allSubjects = { logaritma: { name: "Logaritma", subMateri: [ { id: "log_1", title: "1. Sifat Dasar" }, { id: "log_2", title: "2. Persamaan" }, { id: "log_3", title: "3. Pertidaksamaan" } ] }, fungsi_kuadrat: { name: "Fungsi Kuadrat", subMateri: [ { id: "fk_1", title: "1. Grafik" }, { id: "fk_2", title: "2. Sumbu Simetri" } ] } };
-                
-                for (const subjectKey in allSubjects) {
-                    const subject = allSubjects[subjectKey];
-                    const subMateriIndex = subject.subMateri.findIndex(sub => sub.id === subMateriId);
-                    if (subMateriIndex !== -1) {
-                        if (subMateriIndex === 0) { hasAccess = true; } 
-                        else {
-                            const prevSubMateriId = subject.subMateri[subMateriIndex - 1].id;
-                            if (userProgress[prevSubMateriId] !== undefined && userProgress[prevSubMateriId] !== "") { hasAccess = true; }
-                        }
-                        break;
-                    }
-                }
-                if (!hasAccess) {
-                    alert("Akses ditolak. Selesaikan materi sebelumnya terlebih dahulu.");
-                    window.location.href = 'login.html'; // Path kembali ke login
-                } else {
-                    document.body.style.display = 'block'; // Tampilkan konten jika akses diizinkan
-                }
-            } catch (error) {
-                alert("Terjadi kesalahan saat verifikasi akses.");
-                console.error("Verification Error:", error);
-                window.location.href = 'login.html'; // Path kembali ke login
-            }
-        })();
-    </script>
 
     <style>
         :root {
@@ -127,6 +75,46 @@
             border-left: 4px solid var(--primary-purple);
             border-radius: 0 8px 8px 0;
         }
+
+        /* Tombol Selesai Baca */
+        .finish-button {
+            display: block; width: 100%; padding: 15px; background-color: var(--accent-green);
+            color: var(--text-primary); border: none; border-radius: 8px; font-size: 18px;
+            font-weight: 600; text-align: center; cursor: pointer; margin-top: 3rem;
+            transition: all 0.3s ease;
+        }
+        .finish-button:hover { background-color: #218838; transform: translateY(-2px); }
+        .finish-button:disabled { background-color: #555; cursor: not-allowed; transform: none; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; z-index: 2000;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            background-color: var(--card-bg); padding: 30px; border-radius: 15px;
+            border: 1px solid var(--border-color); box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            width: 90%; max-width: 500px; text-align: center;
+            transform: scale(0.9); transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-content h3 { margin-top: 0; color: var(--primary-purple); font-weight: 600; font-size: 1.5rem; }
+        .modal-content p { color: var(--text-secondary); margin-bottom: 25px; line-height: 1.6; }
+        .modal-footer { display: flex; gap: 10px; }
+        .modal-footer button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .modal-footer .confirm-btn { background-color: var(--accent-green); color: white; }
+        .modal-footer .confirm-btn:hover { background-color: #218838; }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+        }
+
         p, li, .explainer-content, .strategy-box { overflow-x: auto; padding-bottom: 8px; color: var(--text-secondary); }
         p strong, li strong { color: var(--text-primary); }
         blockquote {
@@ -142,8 +130,31 @@
     </style>
 </head>
 <body>
+    <!-- Modal Konfirmasi Selesai -->
+    <div id="finish-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Konfirmasi Penyelesaian</h3>
+            <p>Apakah Anda sudah selesai membaca dan memahami seluruh materi ini?</p>
+            <p style="font-size: 0.9rem; color: #888;">Progress Anda akan disimpan dan tahapan berikutnya akan terbuka.</p>
+            <div class="modal-footer">
+                <button id="cancel-finish-btn" style="background-color: #555; color: white;">Belum</button>
+                <button id="confirm-finish-btn" class="confirm-btn">Ya, Sudah Selesai</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sukses -->
+    <div id="success-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="success-icon">✅</div>
+            <h3>Materi Selesai!</h3>
+            <p>Progress Anda telah disimpan. Tahapan berikutnya sudah terbuka.</p>
+            <p style="font-weight: 600; color: var(--accent-green);">Anda akan diarahkan kembali ke roadmap...</p>
+        </div>
+    </div>
+
     <div class="container">
-        <a href="../esensi-logaritma/" class="back-link" title="Kembali ke Daftar">
+        <a href="../esensi-logaritma/" class="back-link" title="Kembali ke Roadmap">
             <i class="fas fa-arrow-left"></i>
         </a>
         
@@ -214,11 +225,25 @@
             <p>Memahami syarat ini sangat krusial saat Anda menyelesaikan persamaan atau pertidaksamaan logaritma nanti. Seringkali, Anda akan menemukan solusi aljabar yang valid, tetapi solusi tersebut harus dibuang karena melanggar syarat numerus atau basis. Ini adalah jebakan umum dalam soal-soal level MOTS dan HOTS.</p>
         </div>
 
+        <button id="finish-reading-btn" class="finish-button">
+            <i class="fas fa-check-circle"></i> Saya Sudah Selesai Membaca
+        </button>
     </div>
 
     <script>
-        // --- SCRIPT UNTUK FITUR INTERAKTIF ---
         document.addEventListener('DOMContentLoaded', () => {
+            // ============ KONFIGURASI PROGRESS ============
+            const SUB_MATERI_ID = "log_1";
+            const CURRENT_STAGE_ID = "materi";
+            const ROADMAP_PATH = "../esensi-logaritma/";
+            // ==============================================
+
+            const finishBtn = document.getElementById('finish-reading-btn');
+            const finishModal = document.getElementById('finish-modal');
+            const successModal = document.getElementById('success-modal');
+            const confirmFinishBtn = document.getElementById('confirm-finish-btn');
+            const cancelFinishBtn = document.getElementById('cancel-finish-btn');
+
             // Logika untuk tombol penjelasan
             document.querySelectorAll('.explainer-button').forEach(button => {
                 button.addEventListener('click', () => {
@@ -232,6 +257,33 @@
                         }
                     }
                 });
+            });
+
+            // Tombol selesai membaca
+            finishBtn.addEventListener('click', () => {
+                finishModal.classList.add('active');
+            });
+
+            // Batal
+            cancelFinishBtn.addEventListener('click', () => {
+                finishModal.classList.remove('active');
+            });
+
+            // Konfirmasi selesai
+            confirmFinishBtn.addEventListener('click', () => {
+                // Simpan progress
+                const storageKey = `progress_${SUB_MATERI_ID}_${CURRENT_STAGE_ID}`;
+                localStorage.setItem(storageKey, 'completed');
+                console.log(`Progress saved: ${storageKey} = completed`);
+
+                // Tampilkan modal sukses
+                finishModal.classList.remove('active');
+                successModal.classList.add('active');
+
+                // Redirect ke roadmap setelah 2 detik
+                setTimeout(() => {
+                    window.location.href = ROADMAP_PATH;
+                }, 2000);
             });
         });
     </script>
