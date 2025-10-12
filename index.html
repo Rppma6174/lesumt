@@ -6,7 +6,6 @@
     <title>Platform Belajar</title>
     
     <style>
-        /* (CSS dari sebelumnya tetap relevan, dengan beberapa tambahan) */
         :root {
             --primary-color: #007BFF;
             --secondary-color: #6c757d;
@@ -21,48 +20,15 @@
             margin: 0;
             background-color: #e0e0e0;
         }
-
-        /* --- BAGIAN LOGIN --- */
-        #login-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        .login-card {
-            background: var(--card-background);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            width: 100%;
-            max-width: 350px;
-            box-sizing: border-box;
-        }
+        #login-container { display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .login-card { background: var(--card-background); padding: 30px; border-radius: 12px; box-shadow: var(--shadow); width: 100%; max-width: 350px; box-sizing: border-box; }
         .login-card h1 { text-align: center; color: var(--primary-color); }
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; margin-bottom: 5px; color: var(--secondary-color); }
-        .input-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
         #login-error { color: red; text-align: center; margin-top: 10px; font-size: 14px; }
-
-        /* Kontainer Aplikasi Utama (Awalnya tersembunyi) */
         #app-container { display: none; }
-        
-        .app-container {
-            max-width: 450px;
-            margin: 0 auto;
-            background-color: var(--background-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            padding-bottom: 70px;
-        }
+        .app-container { max-width: 450px; margin: 0 auto; background-color: var(--background-color); min-height: 100vh; display: flex; flex-direction: column; position: relative; padding-bottom: 70px; }
         .content { flex-grow: 1; overflow-y: auto; padding: 20px; }
         .page { display: none; }
         .page.active { display: block; animation: fadeIn 0.5s; }
@@ -71,45 +37,20 @@
         .card { background-color: var(--card-background); border-radius: 12px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; }
         .cta-button { display: block; width: 100%; padding: 15px; background-color: var(--primary-color); color: var(--text-light); border: none; border-radius: 8px; font-size: 16px; font-weight: 600; text-align: center; cursor: pointer; text-decoration: none; box-sizing: border-box; }
         .cta-button:disabled { background-color: var(--secondary-color); }
-
-        /* --- DESAIN BARU UNTUK HALAMAN LES --- */
-        .subject-card {
-            background-color: var(--card-background);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        .subject-header {
-            padding: 20px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .subject-card { background-color: var(--card-background); border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden; }
+        .subject-header { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .subject-header h3 { margin: 0; color: var(--primary-color); }
         .subject-header .chevron { transition: transform 0.3s; }
         .subject-card.open .chevron { transform: rotate(180deg); }
-        .sub-materi-container {
-            display: none; /* Awalnya tersembunyi */
-            padding: 0 10px 10px 10px;
-        }
-        .sub-materi-item {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            overflow: hidden;
-        }
+        .sub-materi-container { display: none; padding: 0 10px 10px 10px; }
+        .sub-materi-item { background-color: #f8f9fa; border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
         .sub-materi-header { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .sub-materi-item.locked .sub-materi-header { opacity: 0.6; cursor: not-allowed; }
         .sub-materi-content { display: none; padding: 0 15px 15px 15px; }
-
-        /* Navigasi Bawah (Sama seperti sebelumnya) */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); max-width: 450px; width: 100%; height: 65px; background-color: var(--card-background); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); border-top-left-radius: 20px; border-top-right-radius: 20px; }
         .nav-button { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--secondary-color); transition: color 0.3s; }
         .nav-button svg { width: 24px; height: 24px; }
         .nav-button.active { color: var(--primary-color); }
-
     </style>
 </head>
 <body>
@@ -138,17 +79,13 @@
                 <h1 class="page-title" id="welcome-message">Selamat Datang!</h1>
                 <div class="card">
                      <h3>Progres Belajar Anda</h3>
-                     <div id="dashboard-progress-container">
-                        </div>
+                     <div id="dashboard-progress-container"></div>
                 </div>
             </main>
-            
             <main class="page" id="les-page">
                 <h1 class="page-title">Materi Belajar</h1>
-                <div id="subjects-container">
-                    </div>
+                <div id="subjects-container"></div>
             </main>
-
             <main class="page" id="profil-page">
                 <h1 class="page-title">Profil Saya</h1>
                 <div class="card">
@@ -162,66 +99,38 @@
                     <p>Hubungi saya jika ada kesulitan.</p>
                 </div>
             </main>
-
         </div>
         <nav class="bottom-nav">
-            <button class="nav-button active" data-target="dashboard-page">
-                <svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                <span>Dashboard</span>
-            </button>
-            <button class="nav-button" data-target="les-page">
-                <svg fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path></svg>
-                <span>Les</span>
-            </button>
-            <button class="nav-button" data-target="profil-page">
-                <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-                <span>Profil</span>
-            </button>
-            <button class="nav-button" data-target="bantuan-page">
-                <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>
-                <span>Bantuan</span>
-            </button>
+            <button class="nav-button active" data-target="dashboard-page"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg><span>Dashboard</span></button>
+            <button class="nav-button" data-target="les-page"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path></svg><span>Les</span></button>
+            <button class="nav-button" data-target="profil-page"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg><span>Profil</span></button>
+            <button class="nav-button" data-target="bantuan-page"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg><span>Bantuan</span></button>
         </nav>
     </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // --- KONFIGURASI ---
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx_JGlcLTSgNzULhQ2m4WKHvSm5-L1uNeomsHJW-G6WAjcu_oYPsvPZWJ9Euzd_geQ/exec";
 
-    // --- STRUKTUR DATA MATERI ---
     const allSubjects = {
         logaritma: {
             name: "Logaritma",
-            subMateri: [
-                { title: "1. Sifat Dasar Logaritma", content: "Materi tentang sifat dasar... (Isi materi & kuis di sini)" },
-                { title: "2. Persamaan Logaritma", content: "Materi tentang persamaan... (Isi materi & kuis di sini)" },
-                { title: "3. Pertidaksamaan Logaritma", content: "Materi tentang pertidaksamaan... (Isi materi & kuis di sini)" }
-            ]
+            subMateri: [ { title: "1. Sifat Dasar Logaritma", content: "..." }, { title: "2. Persamaan Logaritma", content: "..." }, { title: "3. Pertidaksamaan Logaritma", content: "..." } ]
         },
         fungsi_kuadrat: {
             name: "Fungsi Kuadrat",
-            subMateri: [
-                { title: "1. Pengertian dan Grafik", content: "Materi tentang pengertian FK... (Isi materi & kuis di sini)" },
-                { title: "2. Sumbu Simetri & Nilai Optimum", content: "Materi tentang sumbu simetri... (Isi materi & kuis di sini)" },
-            ]
+            subMateri: [ { title: "1. Pengertian dan Grafik", content: "..." }, { title: "2. Sumbu Simetri & Nilai Optimum", content: "..." } ]
         }
     };
 
-    // --- APLICATION STATE ---
-    let appState = {
-        loggedInUser: null, // { username, fullName }
-        userProgress: null   // { logaritma: 0, fungsi_kuadrat: 0 }
-    };
+    let appState = { loggedInUser: null, userProgress: null };
 
-    // --- Elemen DOM ---
     const loginContainer = document.getElementById('login-container');
     const appContainer = document.getElementById('app-container');
     const loginForm = document.getElementById('login-form');
     const loginButton = document.getElementById('login-button');
     const loginError = document.getElementById('login-error');
     
-    // ======================= LOGIKA LOGIN =======================
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         loginButton.disabled = true;
@@ -238,13 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         // ==========================================================
-        // ===== PERBAIKAN DITAMBAHKAN DI BLOK FETCH DI BAWAH INI =====
+        // ===== KODE DENGAN PERBAIKAN FINAL ADA DI BLOK DI BAWAH =====
         // ==========================================================
         fetch(GAS_WEB_APP_URL, {
             method: 'POST',
-            // --- PERBAIKAN DI SINI ---
-            redirect: "follow", // Baris ini ditambahkan untuk mengatasi masalah redirect Google
-            // -------------------------
+            redirect: "follow", // <-- INI ADALAH BARIS KUNCI PERBAIKANNYA
             body: JSON.stringify(payload)
         })
         .then(res => res.json())
@@ -258,14 +165,12 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(err => {
             console.error("Fetch Error:", err);
-            loginError.textContent = "Gagal terhubung ke server atau terjadi kesalahan.";
+            loginError.textContent = err.message || "Gagal terhubung ke server.";
             loginButton.disabled = false;
             loginButton.textContent = "Login";
         });
     });
 
-    // ======================= INISIALISASI APLIKASI SETELAH LOGIN =======================
-    // KODE DI BAGIAN INI SAMA SEPERTI SEBELUMNYA, TIDAK ADA PERUBAHAN
     async function initializeApp() {
         try {
             const progressResult = await fetch(`${GAS_WEB_APP_URL}?action=getProgress&user=${appState.loggedInUser.username}`).then(res => res.json());
@@ -288,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setupNavigation();
     }
     
-    // ======================= RENDER & SETUP KONTEN =======================
     function setupUserInfo() {
         document.getElementById('welcome-message').textContent = `Selamat Datang, ${appState.loggedInUser.fullName}!`;
         document.getElementById('profile-name').textContent = appState.loggedInUser.fullName;
@@ -298,48 +202,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderSubjects() {
         const container = document.getElementById('subjects-container');
         container.innerHTML = "";
-        
         for (const subjectKey in allSubjects) {
             const subject = allSubjects[subjectKey];
             const maxUnlockedIndex = appState.userProgress[subjectKey] || 0;
-
             let subMateriHTML = "";
             subject.subMateri.forEach((sub, index) => {
                 const isLocked = index > maxUnlockedIndex;
-                subMateriHTML += `
-                    <div class="sub-materi-item ${isLocked ? 'locked' : ''}" data-subject="${subjectKey}" data-index="${index}">
-                        <div class="sub-materi-header">
-                            <span>${sub.title}</span>
-                            <span>${isLocked ? '🔒' : '✅'}</span>
-                        </div>
-                        <div class="sub-materi-content">
-                            <p>${sub.content}</p>
-                            </div>
-                    </div>
-                `;
+                subMateriHTML += `<div class="sub-materi-item ${isLocked ? 'locked' : ''}" data-subject="${subjectKey}" data-index="${index}"><div class="sub-materi-header"><span>${sub.title}</span><span>${isLocked ? '🔒' : '✅'}</span></div><div class="sub-materi-content"><p>${sub.content}</p></div></div>`;
             });
-
-            const subjectCardHTML = `
-                <div class="subject-card" id="card-${subjectKey}">
-                    <div class="subject-header">
-                        <h3>${subject.name}</h3>
-                        <span class="chevron">🔽</span>
-                    </div>
-                    <div class="sub-materi-container">
-                        ${subMateriHTML}
-                    </div>
-                </div>
-            `;
+            const subjectCardHTML = `<div class="subject-card" id="card-${subjectKey}"><div class="subject-header"><h3>${subject.name}</h3><span class="chevron">🔽</span></div><div class="sub-materi-container">${subMateriHTML}</div></div>`;
             container.innerHTML += subjectCardHTML;
         }
         addEventListenersToSubjects();
     }
 
-    function renderDashboard() {
-        // (Anda bisa membuat tampilan progress di dashboard menjadi lebih detail di sini)
-    }
+    function renderDashboard() { /* ... */ }
 
-    // ======================= EVENT LISTENERS DINAMIS =======================
     function addEventListenersToSubjects() {
         document.querySelectorAll('.subject-header').forEach(header => {
             header.addEventListener('click', () => {
@@ -349,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 content.style.display = content.style.display === 'block' ? 'none' : 'block';
             });
         });
-
         document.querySelectorAll('.sub-materi-header').forEach(header => {
             header.addEventListener('click', () => {
                 const item = header.closest('.sub-materi-item');
@@ -361,26 +238,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 content.style.display = content.style.display === 'block' ? 'none' : 'block';
             });
         });
-        
-        // (Tambahkan event listener untuk form submit kuis di sini)
     }
 
-    // ======================= NAVIGASI APLIKASI =======================
     function setupNavigation() {
         const navButtons = document.querySelectorAll('.nav-button');
         const pages = document.querySelectorAll('.page');
-
         function showPage(pageId) {
             pages.forEach(page => page.classList.remove('active'));
             navButtons.forEach(button => button.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             document.querySelector(`.nav-button[data-target="${pageId}"]`).classList.add('active');
         }
-
         navButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                showPage(button.dataset.target);
-            });
+            button.addEventListener('click', () => { showPage(button.dataset.target); });
         });
         showPage('dashboard-page');
     }
