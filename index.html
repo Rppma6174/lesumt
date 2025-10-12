@@ -114,8 +114,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const NO_WHATSAPP_PENGAJAR = "6285961160545";
 
     const allSubjects = {
-        logaritma: { name: "Logaritma", subMateri: [ { id: "log_1", title: "1. Sifat Dasar", url: "materi/log-01.html" }, { id: "log_2", title: "2. Persamaan", url: "materi/log-02.html" }, { id: "log_3", title: "3. Pertidaksamaan", url: "materi/log-03.html" } ] },
-        fungsi_kuadrat: { name: "Fungsi Kuadrat", subMateri: [ { id: "fk_1", title: "1. Grafik", url: "materi/fk-01.html" }, { id: "fk_2", title: "2. Sumbu Simetri", url: "materi/fk-02.html" } ] }
+        logaritma: { 
+            name: "Logaritma", 
+            subMateri: [ 
+                {id: "log_1", title: "1. Sifat Dasar", url: "materi/esensi-logaritma/" }, 
+                { id: "log_2", title: "2. Persamaan", url: "materi/log-02.html" }, 
+                { id: "log_3", title: "3. Pertidaksamaan", url: "materi/log-03.html" } 
+                       ] 
+        },
+        fungsi_kuadrat: { 
+            name: "Fungsi Kuadrat", subMateri: [ 
+                { id: "fk_1", title: "1. Grafik", url: "materi/fk-01.html" }, 
+                { id: "fk_2", title: "2. Sumbu Simetri", url: "materi/fk-02.html" } 
+            ] 
+        },
     };
     
     let appState = {
@@ -261,5 +273,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
 
