@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Login - Platform Belajar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #8A2BE2;
+            --dark-bg: #141414;
+            --card-bg: #1c1c1c;
+            --border-color: #333;
+            --text-primary: #ffffff;
+            --text-muted: #888;
+            --shadow-heavy: rgba(0, 0, 0, 0.5);
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background-color: var(--dark-bg); color: var(--text-primary); }
+        #login-container { display: flex; align-items: center; justify-content: center; height: 100vh; padding: 20px; }
+        .login-card { background: var(--card-bg); padding: 40px; border-radius: 15px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px var(--shadow-heavy); width: 100%; max-width: 400px; }
+        .login-card h1 { text-align: center; color: var(--primary-purple); font-weight: 700; margin-top: 0; }
+        .input-group { margin-bottom: 25px; }
+        .input-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 14px; font-weight: 500; }
+        .input-group input { width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 8px; background-color: var(--dark-bg); color: var(--text-primary); font-size: 16px; transition: border-color 0.3s, box-shadow 0.3s; }
+        .input-group input:focus { border-color: var(--primary-purple); box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.3); }
+        .cta-button { display: block; width: 100%; padding: 15px; background-color: var(--primary-purple); color: var(--text-primary); border: none; border-radius: 8px; font-size: 16px; font-weight: 600; text-align: center; cursor: pointer; text-decoration: none; transition: all 0.3s ease; }
+        .cta-button:disabled { background-color: var(--text-muted); cursor: not-allowed; }
+        #login-error { color: #ff6b6b; text-align: center; margin-top: 15px; font-size: 14px; min-height: 20px; }
+    </style>
+</head>
+<body>
+    <div id="login-container">
+        <div class="login-card">
+            <h1>Platform Les UMT</h1>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="cta-button" id="login-button">Login</button>
+                <p id="login-error"></p>
+            </form>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Pastikan URL Apps Script terbaru Anda ditempel di sini
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwtP8HaiUAQdEPuxKh-hQ9_3WlN0MHgaLtidS1XJykKU1tFmvF1exfdrgaZJY1rCs/exec";
+
+    const loginForm = document.getElementById('login-form');
+    const loginButton = document.getElementById('login-button');
+    const loginError = document.getElementById('login-error');
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        loginButton.disabled = true;
+        loginButton.textContent = "Loading...";
+        loginError.textContent = "";
+
+        const payload = { 
+            action: "login", 
+            username: loginForm.username.value, 
+            password: loginForm.password.value 
+        };
+
+        fetch(GAS_WEB_APP_URL, { 
+            method: 'POST', 
+            redirect: "follow", 
+            body: JSON.stringify(payload) 
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.status === "success") {
+                // [PENTING] Simpan data pengguna di sessionStorage
+                sessionStorage.setItem('loggedInUser', JSON.stringify(result.data));
+                // Arahkan ke halaman dashboard
+                window.location.href = 'dashboard.html'; 
+            } else {
+                throw new Error(result.message);
+            }
+        })
+        .catch(err => {
+            loginError.textContent = err.message || "Gagal terhubung.";
+            loginButton.disabled = false;
+            loginButton.textContent = "Login";
+        });
+    });
+});
+</script>
+</body>
+</html>
