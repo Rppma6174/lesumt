@@ -4,6 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tahap 1: Esensi Logaritma - UMT Learning</title>
+
+        <script>
+        // --- KONFIGURASI PENTING UNTUK HALAMAN INI ---
+        const subMateriId = 'log_1';      // ID Peta Belajar Induk (contoh: log_1, fk_1, dll)
+        const thisStageId = 'materi';     // ID Tahap INI (contoh: materi, latihan1, dll)
+        const previousStageId = '';       // ID Tahap SEBELUMNYA (kosongkan jika ini tahap pertama)
+        // ----------------------------------------------
+
+        (function secureContentPage() {
+            // Sembunyikan konten halaman terlebih dahulu
+            document.documentElement.style.visibility = 'hidden';
+
+            // Cek #1: Apakah pengguna sudah login?
+            const loggedInUserData = sessionStorage.getItem('loggedInUser');
+            if (!loggedInUserData) {
+                alert("Akses ditolak. Silakan login terlebih dahulu.");
+                window.location.href = '../../login.html';
+                return;
+            }
+
+            // Cek #2: Apakah tahap sebelumnya sudah selesai?
+            // Jika previousStageId tidak kosong, lakukan pengecekan.
+            if (previousStageId) {
+                const prevStageKey = `progress_${subMateriId}_${previousStageId}`;
+                const isPrevStageCompleted = localStorage.getItem(prevStageKey) === 'completed';
+
+                if (!isPrevStageCompleted) {
+                    alert("Akses ditolak. Selesaikan tahap sebelumnya pada Peta Belajar.");
+                    // Kembalikan ke halaman peta belajar induknya
+                    window.location.href = 'index.html'; 
+                    return;
+                }
+            }
+
+            // Jika semua pemeriksaan lolos, tampilkan halaman
+            document.documentElement.style.visibility = 'visible';
+        })();
+    </script>
+    
     <link rel="icon" type="image/png" href="../UMT-Logo - Copy.png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
