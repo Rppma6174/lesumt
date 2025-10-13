@@ -6,31 +6,34 @@
     <title>Uji Langsung: Esensi Logaritma</title>
 
     <script>
-        // --- KONFIGURASI PENTING UNTUK HALAMAN INI ---
         const subMateriId = 'log_1';
         const thisStageId = 'ujian';
         const previousStageId = 'latihan3';
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwtP8HaiUAQdEPuxKh-hQ9_3WlN0MHgaLtidS1XJykKU1tFmvF1exfdrgaZJY1rCs/exec";
-        // ----------------------------------------------
 
-        (function secureContentPage() {
-            document.documentElement.style.visibility = 'hidden';
+        // Script keamanan - dijalankan setelah DOM ready
+        window.addEventListener('DOMContentLoaded', function() {
             const loggedInUserData = sessionStorage.getItem('loggedInUser');
             if (!loggedInUserData) {
                 alert("Akses ditolak. Silakan login terlebih dahulu.");
-                window.location.href = '../../login.html';
+                window.location.href = '../login.html';
                 return;
             }
             if (previousStageId) {
                 const prevStageKey = `progress_${subMateriId}_${previousStageId}`;
-                if (localStorage.getItem(prevStageKey) !== 'completed') {
-                    alert("Akses ditolak. Selesaikan tahap sebelumnya pada Peta Belajar.");
+                const isPrevCompleted = localStorage.getItem(prevStageKey) === 'completed';
+                console.log(`🔍 Cek akses ujian: ${prevStageKey} = ${isPrevCompleted ? 'LULUS ✅' : 'TERKUNCI ❌'}`);
+                
+                if (!isPrevCompleted) {
+                    alert("Akses ditolak. Selesaikan Latihan 3 terlebih dahulu pada Peta Belajar.");
                     window.location.href = './index.html'; 
                     return;
                 }
             }
-            document.documentElement.style.visibility = 'visible';
-        })();
+            // Tampilkan halaman
+            document.body.style.visibility = 'visible';
+            console.log('✅ Halaman ujian berhasil dimuat');
+        });
     </script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -165,7 +168,7 @@
         }
     </style>
 </head>
-<body style="visibility: hidden;">
+<body>
     <div class="container">
         <div class="header">
             <h1>⚡ Esensi Logaritma</h1>
@@ -196,13 +199,11 @@
     </a>
     
     <script>
-        // --- [BARU] FUNGSI INTEGRASI YANG DIPANGGIL SAAT UJIAN BENAR-BENAR SELESAI ---
         async function markAsCompletedAndUnlockNext() {
             try {
-                // Langkah 1: Tandai selesai di Peta Belajar (localStorage)
                 localStorage.setItem(`progress_${subMateriId}_${thisStageId}`, 'completed');
+                console.log(`✅ Ujian selesai! Progress disimpan: progress_${subMateriId}_${thisStageId}`);
 
-                // Langkah 2: Kirim sinyal ke Google Sheets untuk update nilai & buka kunci
                 const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
                 const payload = {
                     action: 'submitScore',
@@ -226,7 +227,6 @@
             }
         }
 
-        // --- KODE SISTEM KUIS ANDA (Dengan sedikit modifikasi) ---
         const state = { currentStage: 1, attempts: { LOTS: 5, MOTS: 5, HOTS: 5 }, passCount: { LOTS: 0, MOTS: 0, HOTS: 0 }, consecutiveFails: { LOTS: 0, MOTS: 0, HOTS: 0 }, currentQuiz: null, userAnswers: [], activeQuestions: [] };
 
         const quizContent = {
@@ -248,14 +248,14 @@
         function generateCertificate() {
             state.currentStage = 4;
             updateProgress();
-            markAsCompletedAndUnlockNext(); // <-- [MODIFIKASI] MEMANGGIL FUNGSI INTEGRASI
+            markAsCompletedAndUnlockNext();
             return `<div class="certificate">
                         <div style="font-size: 5em;">🏆</div><h2 style="font-size: 2.5em; margin-bottom: 20px; color: var(--accent-teal);">Sub-Materi Selesai!</h2>
                         <p style="font-size: 1.3em; margin: 20px 0;">SELAMAT!</p>
                         <p style="font-size: 1.1em; line-height: 1.6;">Kamu telah berhasil menyelesaikan topik <strong>Esensi Logaritma</strong>.</p>
                     </div>
                     <div class="button-group">
-                        <a href="../../dashboard.html#les" class="btn btn-primary">Kembali ke Daftar Materi</a>
+                        <a href="../dashboard.html#les" class="btn btn-primary">Kembali ke Daftar Materi</a>
                     </div>`;
         }
 
@@ -263,7 +263,7 @@
         function startLOTS() { startQuiz('LOTS'); }
         function startMOTS() { startQuiz('MOTS'); }
         function startHOTS() { startQuiz('HOTS'); }
-        function resetSystem() { window.location.href = '../../dashboard.html#les'; }
+        function resetSystem() { window.location.href = '../dashboard.html#les'; }
         
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('step0').classList.add('completed');
