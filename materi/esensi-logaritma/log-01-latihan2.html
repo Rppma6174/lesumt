@@ -4,6 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Latihan Soal 2: Esensi Logaritma - UMT Learning</title>
+
+        <script>
+        // --- SCRIPT PENJAGA KEAMANAN ---
+        // 1. KONFIGURASI PENTING
+        const subMateriId = 'log_1'; // ID UNIK UNTUK HALAMAN INI
+        const GAS_WEB_APP_URL = "GANTI_DENGAN_URL_APPS_SCRIPT_TERBARU_ANDA";
+
+        // 2. FUNGSI PENJAGA UTAMA (jangan diubah)
+        (async function securePage() {
+            document.body.style.display = 'none'; // Sembunyikan konten dulu
+            const loggedInUserData = sessionStorage.getItem('loggedInUser');
+            if (!loggedInUserData) {
+                alert("Akses ditolak. Silakan login terlebih dahulu.");
+                window.location.href = '../../login.html'; // Path kembali ke login
+                return;
+            }
+            const user = JSON.parse(loggedInUserData);
+            try {
+                const res = await fetch(`${GAS_WEB_APP_URL}?action=getProgress&user=${user.username}`);
+                const progressResult = await res.json();
+                if (progressResult.status !== "success") throw new Error("Gagal memverifikasi progres.");
+                
+                const userProgress = progressResult.data;
+                let hasAccess = false;
+                
+                // Objek ini harus sama persis dengan yang ada di dashboard.html
+                const allSubjects = { logaritma: { name: "Logaritma", subMateri: [ { id: "log_1", title: "1. Sifat Dasar" }, { id: "log_2", title: "2. Persamaan" }, { id: "log_3", title: "3. Pertidaksamaan" } ] }, fungsi_kuadrat: { name: "Fungsi Kuadrat", subMateri: [ { id: "fk_1", title: "1. Grafik" }, { id: "fk_2", title: "2. Sumbu Simetri" } ] } };
+                
+                for (const subjectKey in allSubjects) {
+                    const subject = allSubjects[subjectKey];
+                    const subMateriIndex = subject.subMateri.findIndex(sub => sub.id === subMateriId);
+                    if (subMateriIndex !== -1) {
+                        if (subMateriIndex === 0) { hasAccess = true; } 
+                        else {
+                            const prevSubMateriId = subject.subMateri[subMateriIndex - 1].id;
+                            if (userProgress[prevSubMateriId] !== undefined && userProgress[prevSubMateriId] !== "") { hasAccess = true; }
+                        }
+                        break;
+                    }
+                }
+                if (!hasAccess) {
+                    alert("Akses ditolak. Selesaikan materi sebelumnya terlebih dahulu.");
+                    window.location.href = '../../dashboard.html';
+                } else {
+                    document.body.style.display = 'block'; // Tampilkan konten jika akses diizinkan
+                }
+            } catch (error) {
+                alert("Terjadi kesalahan saat verifikasi akses.");
+                console.error("Verification Error:", error);
+                window.location.href = '../../dashboard.html';
+            }
+        })();
+    </script>
+    
     <link rel="icon" type="image/png" href="../UMT-Logo - Copy.png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
