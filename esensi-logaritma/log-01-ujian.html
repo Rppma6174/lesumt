@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uji Langsung: Esensi Logaritma</title>
+
+    <script>
+        // --- KONFIGURASI PENTING UNTUK HALAMAN INI ---
+        const subMateriId = 'log_1';
+        const thisStageId = 'ujian';
+        const previousStageId = 'latihan3';
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwtP8HaiUAQdEPuxKh-hQ9_3WlN0MHgaLtidS1XJykKU1tFmvF1exfdrgaZJY1rCs/exec";
+        // ----------------------------------------------
+
+        (function secureContentPage() {
+            document.documentElement.style.visibility = 'hidden';
+            const loggedInUserData = sessionStorage.getItem('loggedInUser');
+            if (!loggedInUserData) {
+                alert("Akses ditolak. Silakan login terlebih dahulu.");
+                window.location.href = '../../login.html';
+                return;
+            }
+            if (previousStageId) {
+                const prevStageKey = `progress_${subMateriId}_${previousStageId}`;
+                if (localStorage.getItem(prevStageKey) !== 'completed') {
+                    alert("Akses ditolak. Selesaikan tahap sebelumnya pada Peta Belajar.");
+                    window.location.href = './index.html'; 
+                    return;
+                }
+            }
+            document.documentElement.style.visibility = 'visible';
+        })();
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --dark-bg: #141414; --dark-card: #1f1f1f; --dark-border: #333;
+            --text-light: #f0f0f0; --text-muted: #aaa; --accent-blue: #007bff;
+            --accent-green: #28a745; --accent-red: #dc3545; --accent-yellow: #ffc107;
+            --accent-teal: #50e3c2;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--dark-bg); color: var(--text-light);
+            min-height: 100vh; padding: 20px;
+        }
+        .container {
+            max-width: 900px; margin: 0 auto; background: var(--dark-card);
+            border-radius: 15px; padding: 30px; border: 1px solid var(--dark-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .header {
+            text-align: center; margin-bottom: 30px; padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+        .header h1 { color: var(--text-light); font-size: 2.5em; margin-bottom: 10px; }
+        .header p { color: var(--text-muted); font-size: 1.1em; }
+        .progress-container {
+            margin: 30px 0; padding: 20px; background: rgba(0,0,0,0.2);
+            border: 1px solid var(--dark-border); border-radius: 15px;
+        }
+        .progress-steps {
+            display: flex; justify-content: space-between; margin-bottom: 15px; position: relative;
+        }
+        .progress-steps::before {
+            content: ''; position: absolute; top: 20px; left: 0; right: 0;
+            height: 4px; background: var(--dark-border); z-index: 0;
+        }
+        .progress-fill {
+            position: absolute; top: 20px; left: 0; height: 4px;
+            background: var(--accent-blue); transition: width 0.5s ease; z-index: 1;
+        }
+        .step { display: flex; flex-direction: column; align-items: center; z-index: 2; position: relative; }
+        .step-circle {
+            width: 40px; height: 40px; border-radius: 50%; background: var(--dark-border);
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
+            color: var(--text-muted); border: 3px solid var(--dark-border); margin-bottom: 8px; transition: all 0.3s;
+        }
+        .step.active .step-circle {
+            background: var(--dark-card); border-color: var(--accent-blue);
+            color: var(--accent-blue); transform: scale(1.2);
+        }
+        .step.completed .step-circle { background: var(--accent-green); border-color: var(--accent-green); color: white; }
+        .step-label { font-size: 0.85em; color: var(--text-muted); font-weight: 600; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+        .stat-card {
+            background: var(--dark-bg); border: 1px solid var(--dark-border);
+            padding: 15px; border-radius: 12px; text-align: center;
+        }
+        .stat-value { font-size: 2em; font-weight: bold; color: var(--accent-teal); margin-bottom: 5px; }
+        .stat-label { font-size: 0.9em; color: var(--text-muted); }
+        .content-area { margin: 30px 0; min-height: 300px; }
+        .material-section, .question-card, .result-summary {
+            padding: 25px; background: var(--dark-card); border: 1px solid var(--dark-border);
+            border-radius: 15px; margin-bottom: 20px;
+        }
+        .question-number { color: var(--accent-blue); font-weight: bold; margin-bottom: 15px; }
+        .question-text { margin-bottom: 20px; font-size: 1.1em; line-height: 1.6; }
+        .option {
+            padding: 15px 20px; background: var(--dark-bg); border: 2px solid var(--dark-border);
+            border-radius: 10px; cursor: pointer; transition: all 0.3s; display: flex;
+            align-items: center; color: var(--text-muted);
+        }
+        .option:hover { border-color: var(--accent-blue); color: var(--text-light); background: #2a2a2a; }
+        .option.selected { border-color: var(--accent-blue); background: rgba(0, 123, 255, 0.1); color: var(--text-light); }
+        .option.correct { border-color: var(--accent-green); background: rgba(40, 167, 69, 0.2); color: #d4edda; }
+        .option.incorrect { border-color: var(--accent-red); background: rgba(220, 53, 69, 0.2); color: #f8d7da; }
+        .option input[type="radio"] { margin-right: 15px; }
+        .btn {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-muted); padding: 12px 35px; border-radius: 8px; font-size: 1em;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin: 10px 5px; text-decoration: none; display: inline-block;
+        }
+        .btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-light); transform: translateY(-2px); }
+        .btn-primary { background: var(--accent-blue); border-color: var(--accent-blue); color: white; }
+        .btn-primary:hover { background: #0069d9; border-color: #0062cc; }
+        .btn-secondary { background: #6c757d; border-color: #6c757d; color: white; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; background: var(--dark-border); }
+        .button-group { display: flex; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .explanation {
+            background: #2a2a2a; padding: 15px; border-radius: 10px; margin-top: 20px;
+            border: 1px solid #444; color: var(--text-muted); line-height: 1.7;
+            overflow-x: auto;
+        }
+        .attempts-info {
+            background-color: rgba(255, 193, 7, 0.1); border-left: 5px solid var(--accent-yellow);
+            color: #fff3cd; padding: 15px; border-radius: 10px; margin: 15px 0;
+        }
+        .hidden { display: none; }
+        .certificate {
+            background: linear-gradient(135deg, #1f1f1f, #2a2a2a); color: white; padding: 40px;
+            border-radius: 20px; text-align: center; margin: 30px 0; border: 2px solid var(--accent-teal);
+            box-shadow: 0 0 40px rgba(80, 227, 194, 0.2);
+        }
+        #notification-container {
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .notification {
+            background-color: #2a2a2a; color: var(--text-light); padding: 15px 20px;
+            border-radius: 8px; border-left: 5px solid; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            display: flex; align-items: center; gap: 10px;
+            animation: slideIn 0.3s ease forwards, fadeOut 0.5s ease 3.5s forwards;
+        }
+        .notification.warning { border-color: var(--accent-yellow); }
+        .notification.success { border-color: var(--accent-green); }
+        .notification.info { border-color: var(--accent-blue); }
+        @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(20px); } }
+        .floating-back-btn { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: var(--accent-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); text-decoration: none; transition: all 0.3s ease; z-index: 999; }
+        .floating-back-btn:hover { transform: scale(1.1); }
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 20px 15px; }
+            .header h1 { font-size: 2em; }
+            .step-label { display: none; }
+            .step-circle { width: 35px; height: 35px; }
+            .progress-steps::before, .progress-fill { top: 17.5px; }
+            .stats { grid-template-columns: 1fr; }
+            .button-group { flex-direction: column; align-items: stretch; }
+            .btn { width: 100%; margin: 5px 0; }
+        }
+    </style>
+</head>
+<body style="visibility: hidden;">
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Esensi Logaritma</h1>
+            <p>Sistem Pembelajaran Terstruktur dengan 3 Level</p>
+        </div>
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                <div class="step active" id="step0"><div class="step-circle">📚</div><div class="step-label">Materi</div></div>
+                <div class="step" id="step1"><div class="step-circle">1</div><div class="step-label">LOTS</div></div>
+                <div class="step" id="step2"><div class="step-circle">2</div><div class="step-label">MOTS</div></div>
+                <div class="step" id="step3"><div class="step-circle">3</div><div class="step-label">HOTS</div></div>
+                <div class="step" id="step4"><div class="step-circle">🏆</div><div class="step-label">Selesai</div></div>
+            </div>
+            <div class="stats">
+                <div class="stat-card"><div class="stat-value" id="currentLevel">LOTS</div><div class="stat-label">Level Saat Ini</div></div>
+                <div class="stat-card"><div class="stat-value" id="attemptsLeft">5</div><div class="stat-label">Percobaan Tersisa</div></div>
+                <div class="stat-card"><div class="stat-value" id="passCount">0/2</div><div class="stat-label">Kali Lulus</div></div>
+            </div>
+        </div>
+        <div class="content-area" id="contentArea"></div>
+    </div>
+
+    <div id="notification-container"></div>
+    
+    <a href="./index.html" class="floating-back-btn" title="Kembali ke Peta Belajar">
+        <svg fill="none" stroke-width="2.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"></path></svg>
+    </a>
+    
+    <script>
+        // --- [BARU] FUNGSI INTEGRASI YANG DIPANGGIL SAAT UJIAN BENAR-BENAR SELESAI ---
+        async function markAsCompletedAndUnlockNext() {
+            try {
+                // Langkah 1: Tandai selesai di Peta Belajar (localStorage)
+                localStorage.setItem(`progress_${subMateriId}_${thisStageId}`, 'completed');
+
+                // Langkah 2: Kirim sinyal ke Google Sheets untuk update nilai & buka kunci
+                const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+                const payload = {
+                    action: 'submitScore',
+                    username: user.username,
+                    subMateriId: subMateriId 
+                };
+
+                showNotification('Menyimpan progres akhir Anda...', 'info');
+                const response = await fetch(GAS_WEB_APP_URL, { method: 'POST', redirect: 'follow', body: JSON.stringify(payload) });
+                const result = await response.json();
+
+                if (result.status !== 'success') {
+                    throw new Error(result.message || 'Gagal menyimpan nilai ke server.');
+                }
+                
+                showNotification('Selamat! Sub-materi berikutnya telah terbuka!', 'success');
+
+            } catch (error) {
+                console.error("Gagal menyelesaikan sub-materi:", error);
+                showNotification('Gagal terhubung untuk membuka materi selanjutnya.', 'warning');
+            }
+        }
+
+        // --- KODE SISTEM KUIS ANDA (Dengan sedikit modifikasi) ---
+        const state = { currentStage: 1, attempts: { LOTS: 5, MOTS: 5, HOTS: 5 }, passCount: { LOTS: 0, MOTS: 0, HOTS: 0 }, consecutiveFails: { LOTS: 0, MOTS: 0, HOTS: 0 }, currentQuiz: null, userAnswers: [], activeQuestions: [] };
+
+        const quizContent = {
+            material: ``,
+            LOTS: [ { question: "Bentuk eksponen dari \\( ^2\\log 8 = 3 \\) adalah...", options: [{ text: "\\(2^3 = 8\\)" }, { text: "\\(3^2 = 8\\)" }, { text: "\\(8^3 = 2\\)" }], correct: 0, explanation: "Definisi logaritma \\( ^a\\log b = c \\) ekuivalen dengan \\( a^c = b \\). Jadi, basis 2 dipangkatkan hasil 3 akan menjadi numerus 8." }, { question: "Bentuk logaritma dari \\( 5^2 = 25 \\) adalah...", options: [{ text: "\\( ^5\\log 25 = 2 \\)" }, { text: "\\( ^2\\log 25 = 5 \\)" }, { text: "\\( ^{25}\\log 5 = 2 \\)" }], correct: 0, explanation: "Eksponen \\( a^c = b \\) ekuivalen dengan \\( ^a\\log b = c \\). Jadi, basis 5, hasil 25, dan pangkat 2." }, { question: "Nilai dari \\( ^3\\log 9 \\) adalah...", options: [{ text: "2" }, { text: "3" }, { text: "1" }], correct: 0, explanation: "Pertanyaannya adalah '3 pangkat berapa agar hasilnya 9?'. Jawabannya adalah 2, karena \\(3^2=9\\)." }, { question: "Nilai dari \\( ^4\\log 64 \\) adalah...", options: [{ text: "3" }, { text: "4" }, { text: "16" }], correct: 0, explanation: "Pertanyaannya adalah '4 pangkat berapa hasilnya 64?'. Jawabannya adalah 3, karena \\(4^3 = 64\\)." }, { question: "Jika \\( ^x\\log 49 = 2 \\), maka nilai \\(x\\) adalah...", options: [{ text: "7" }, { text: "2" }, { text: "98" }], correct: 0, explanation: "Ubah ke bentuk eksponen: \\(x^2 = 49\\). Karena basis harus positif, maka \\(x=7\\)." }, { question: "Bentuk eksponen dari \\( ^{10}\\log 100 = 2 \\) adalah...", options: [{ text: "\\(10^2 = 100\\)" }, { text: "\\(2^{10} = 100\\)" }, { text: "\\(100^2=10\\)" }], correct: 0, explanation: "Basis 10, pangkat 2, hasilnya 100." }, { question: "Bentuk logaritma dari \\( 6^1 = 6 \\) adalah...", options: [{ text: "\\( ^6\\log 6 = 1 \\)" }, { text: "\\( ^1\\log 6 = 6 \\)" }, { text: "\\( ^6\\log 1 = 6 \\)" }], correct: 0, explanation: "Basis 6, hasil 6, pangkatnya 1." }, { question: "Nilai dari \\( ^7\\log 1 \\) adalah...", options: [{ text: "0" }, { text: "1" }, { text: "7" }], correct: 0, explanation: "Setiap bilangan (selain 0) yang dipangkatkan 0 hasilnya adalah 1. Jadi, \\(7^0=1\\)." }, { question: "Nilai dari \\( ^2\\log (1/2) \\) adalah...", options: [{ text: "-1" }, { text: "1" }, { text: "2" }], correct: 0, explanation: "Pertanyaannya '2 pangkat berapa hasilnya 1/2?'. Jawabannya adalah -1, karena \\(2^{-1} = 1/2\\)." }, { question: "Jika \\( ^3\\log x = 4 \\), maka nilai \\(x\\) adalah...", options: [{ text: "81" }, { text: "12" }, { text: "7" }], correct: 0, explanation: "Ubah ke bentuk eksponen: \\(x = 3^4 = 81\\)." } ],
+            MOTS: [ { question: "Manakah ekspresi logaritma berikut yang TIDAK terdefinisi?", options: [{ text: "\\( ^1\\log 5 \\)" }, { text: "\\( ^5\\log 1 \\)" }, { text: "\\( ^2\\log 3 \\)" }], correct: 0, explanation: "Syarat basis logaritma adalah \\(a>0\\) dan \\(a \\ne 1\\). Ekspresi \\( ^1\\log 5 \\) melanggar syarat \\(a \\ne 1\\)." }, { question: "Manakah ekspresi logaritma berikut yang TIDAK terdefinisi?", options: [{ text: "\\( ^3\\log (-9) \\)" }, { text: "\\( ^3\\log (1/9) \\)" }, { text: "\\( ^9\\log 3 \\)" }], correct: 0, explanation: "Syarat numerus (bilangan yang dilogaritmakan) harus positif (b > 0). Nilai -9 adalah negatif." }, { question: "Agar ekspresi \\( ^x\\log 10 \\) terdefinisi, syarat untuk \\(x\\) adalah...", options: [{ text: "\\(x > 0\\) dan \\(x \\ne 1\\)" }, { text: "\\(x > 0\\)" }, { text: "\\(x \\ne 1\\)" }], correct: 0, explanation: "Sebagai basis, \\(x\\) harus memenuhi dua syarat sekaligus: positif dan tidak sama dengan 1." }, { question: "Agar ekspresi \\( ^5\\log (x-3) \\) terdefinisi, syarat untuk \\(x\\) adalah...", options: [{ text: "\\(x > 3\\)" }, { text: "\\(x < 3\\)" }, { text: "\\(x \\ne 3\\)" }], correct: 0, explanation: "Syarat numerus adalah harus lebih besar dari 0. Maka, \\(x-3 > 0 \\implies x > 3\\)." }, { question: "Logaritma pada dasarnya adalah operasi kebalikan dari...", options: [{ text: "Eksponensial (perpangkatan)" }, { text: "Akar" }, { text: "Pembagian" }], correct: 0, explanation: "Logaritma diciptakan untuk 'membatalkan' atau mencari pangkat dalam operasi eksponensial." } ],
+            HOTS: [ { question: "Apa tujuan utama diciptakannya logaritma?", options: [{ text: "Untuk menyelesaikan persamaan dimana variabelnya adalah pangkat" }, { text: "Untuk menyederhanakan perkalian" }, { text: "Untuk menghitung akar" }], correct: 0, explanation: "Seperti yang dijelaskan materi, logaritma adalah 'kunci' untuk 'gembok' eksponen. Logaritma adalah alat untuk menemukan nilai pangkat yang tidak diketahui." }, { question: "Analogi yang paling tepat untuk hubungan eksponen dan logaritma adalah...", options: [{ text: "Gembok dan Kunci" }, { text: "Pedang dan Perisai" }, { text: "Mobil dan Roda" }], correct: 0, explanation: "Eksponen 'mengunci' sebuah nilai (contoh: \\(3^4\\) mengunci 3 menjadi 81), dan logaritma 'membuka' nilai tersebut untuk menemukan pangkatnya (\\( ^3\\log 81\\) menemukan 4)." }, { question: "Manakah yang bisa diselesaikan tanpa logaritma? (Hanya dengan aljabar dasar)", options: [{ text: "\\(x^3 = 27\\)" }, { text: "\\(3^x = 27\\)" }, { text: "\\(3^x = 30\\)" }], correct: 0, explanation: "\\(x^3=27\\) bisa diselesaikan dengan akar pangkat tiga (\\(x=3\\)). Dua lainnya menanyakan 'pangkat berapa', yang merupakan esensi dari logaritma." } ]
+        };
+
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
+        function showNotification(message, type = 'warning') { const container = document.getElementById('notification-container'); const notif = document.createElement('div'); notif.className = `notification ${type}`; let icon = '⚠️'; if (type === 'success') icon = '✅'; if (type === 'info') icon = 'ℹ️'; notif.innerHTML = `<span>${icon}</span> <span>${message}</span>`; container.appendChild(notif); setTimeout(() => { notif.remove(); }, 4000); }
+        function updateProgress() { const stages = ['step0', 'step1', 'step2', 'step3', 'step4']; const progress = (state.currentStage / 4) * 100; document.getElementById('progressFill').style.width = progress + '%'; stages.forEach((id, idx) => { const step = document.getElementById(id); step.classList.remove('active', 'completed'); if (idx < state.currentStage) step.classList.add('completed'); else if (idx === state.currentStage) step.classList.add('active'); }); const levelNames = ['Materi', 'LOTS', 'MOTS', 'HOTS', 'Selesai']; document.getElementById('currentLevel').textContent = levelNames[state.currentStage]; }
+        function startQuiz(level) { state.currentQuiz = level; if (!quizContent[level] || quizContent[level].length === 0) { console.error(`Bank soal untuk level ${level} kosong atau tidak ada.`); document.getElementById('contentArea').innerHTML = `<p style="color:red;">Error: Bank Soal untuk level '${level}' tidak ditemukan.</p>`; return; } const fullBank = quizContent[level]; const shuffledBank = shuffleArray([...fullBank]); state.activeQuestions = shuffledBank.slice(0, 5); state.userAnswers = Array(state.activeQuestions.length).fill(null); const levelMap = { LOTS: 1, MOTS: 2, HOTS: 3 }; state.currentStage = levelMap[level]; updateProgress(); updateStats(); const content = `<div class="quiz-section active"><h2 style="text-align:center; margin-bottom: 20px;">📝 ${level} - Mode Ujian (5 Soal Acak)</h2><div class="attempts-info"><strong>Percobaan ${6 - state.attempts[level]} dari 5</strong> | Sudah lulus: ${state.passCount[level]}/2 kali | Gagal berturut-turut: ${state.consecutiveFails[level]}/3</div><div id="questionsContainer"></div><div class="button-group" id="quiz-button-group"><button id="submitBtn" class="btn btn-primary" onclick="submitQuiz()">Submit Jawaban</button></div></div>`; document.getElementById('contentArea').innerHTML = content; renderQuestions(state.activeQuestions); }
+        function renderQuestions(questions) { const container = document.getElementById('questionsContainer'); container.innerHTML = questions.map((q, idx) => { const optionsHTML = q.options.map((opt, optIdx) => `<div class="option" onclick="selectOption(this, ${idx}, ${optIdx})"><input type="radio" name="q${idx}" id="q${idx}opt${optIdx}" style="pointer-events: none;"><label for="q${idx}opt${optIdx}" style="cursor: pointer; width: 100%;">${opt.text}</label></div>`).join(''); return `<div class="question-card" id="question${idx}"><div class="question-number">Soal ${idx + 1} dari ${questions.length}</div><div class="question-text">${q.question}</div><div class="options" style="display:flex; flex-direction:column; gap:10px;">${optionsHTML}</div><div class="explanation hidden" id="explanation${idx}"></div></div>`; }).join(''); setTimeout(() => MathJax.typesetPromise(), 10); }
+        function selectOption(element, questionIdx, optionIdx) { if (document.getElementById('submitBtn')?.disabled) { return; } const options = document.querySelectorAll(`#question${questionIdx} .option`); options.forEach(opt => opt.classList.remove('selected')); element.classList.add('selected'); element.querySelector('input[type="radio"]').checked = true; state.userAnswers[questionIdx] = optionIdx; }
+        function submitQuiz() { const level = state.currentQuiz; const questions = state.activeQuestions; const unanswered = state.userAnswers.filter(ans => ans === null).length; if (unanswered > 0) { showNotification(`Mohon jawab semua soal! Ada ${unanswered} soal yang belum terjawab.`); return; } let correct = 0; questions.forEach((q, idx) => { const userAnswerIdx = state.userAnswers[idx]; const isCorrect = (userAnswerIdx === q.correct); if (isCorrect) correct++; const options = document.querySelectorAll(`#question${idx} .option`); options[userAnswerIdx].classList.add(isCorrect ? 'correct' : 'incorrect'); if (!isCorrect) { options[q.correct].classList.add('correct'); } const explanation = document.getElementById(`explanation${idx}`); explanation.innerHTML = `<strong>💡 Pembahasan:</strong> ${q.explanation}`; explanation.classList.remove('hidden'); }); setTimeout(() => MathJax.typesetPromise(), 10); const score = (correct / questions.length) * 100; const passed = score >= 80; state.attempts[level]--; if (passed) { state.passCount[level]++; state.consecutiveFails[level] = 0; showNotification(`Luar biasa! Skor Anda ${score.toFixed(0)}%.`, 'success'); } else { state.consecutiveFails[level]++; showNotification(`Skor Anda ${score.toFixed(0)}%. Terus coba lagi!`, 'warning'); } updateStats(); document.getElementById('submitBtn').style.display = 'none'; document.getElementById('quiz-button-group').innerHTML = `<button class="btn btn-primary" onclick='showResult("${level}", ${score}, ${passed})'>Lihat Ringkasan Hasil →</button>`; }
+        function showResult(level, score, passed) { const canProceed = state.passCount[level] >= 2; const isEliminated = state.consecutiveFails[level] >= 3 || (state.attempts[level] === 0 && !canProceed); let resultHTML = `<div class="result-summary" style="text-align: center;"><h2>${passed ? '✅ Lulus!' : '❌ Belum Lulus'} (Skor Minimal: 80%)</h2><div style="font-size: 4em; font-weight: bold; color: ${passed ? 'var(--accent-green)' : 'var(--accent-red)'}; margin: 20px 0;">${score.toFixed(0)}%</div><p style="font-size: 1.2em; margin: 20px 0;">Kamu menjawab benar ${Math.round((score / 100) * state.activeQuestions.length)} dari ${state.activeQuestions.length} soal</p><div class="attempts-info"><strong>Status:</strong><br>Lulus: ${state.passCount[level]}/2 kali | Percobaan tersisa: ${state.attempts[level]} | Gagal berturut-turut: ${state.consecutiveFails[level]}/3</div>`; if (isEliminated) { resultHTML += `<div style="background: rgba(220, 53, 69, 0.2); padding: 20px; border-radius: 10px; margin: 20px 0;"><h3 style="color: var(--accent-red);">❌ Mode Kilat - GUGUR</h3><p style="margin: 15px 0;">Kamu telah ${state.consecutiveFails[level] >= 3 ? 'gagal 3x berturut-turut' : 'kehabisan percobaan'}.</p></div><div class="button-group"><button class="btn btn-secondary" onclick="resetSystem()">Mulai Ulang dari Awal</button></div>`; } else if (canProceed) { const nextLevel = level === 'LOTS' ? 'MOTS' : (level === 'MOTS' ? 'HOTS' : null); if (nextLevel) { resultHTML += `<div style="background: rgba(40, 167, 69, 0.2); padding: 20px; border-radius: 10px; margin: 20px 0;"><h3 style="color: var(--accent-green);">🔓 Level ${nextLevel} Terbuka!</h3><p style="margin: 15px 0;">Siap untuk tantangan berikutnya?</p></div><div class="button-group"><button class="btn btn-primary" onclick="start${nextLevel}()">Lanjut ke ${nextLevel} →</button></div>`; } else { resultHTML += generateCertificate(); } } else { resultHTML += `<div class="button-group"><button class="btn btn-primary" onclick="start${level}()">Coba Lagi (${state.attempts[level]} percobaan)</button></div>`; } resultHTML += `</div>`; document.getElementById('contentArea').innerHTML = resultHTML; }
+        
+        function generateCertificate() {
+            state.currentStage = 4;
+            updateProgress();
+            markAsCompletedAndUnlockNext(); // <-- [MODIFIKASI] MEMANGGIL FUNGSI INTEGRASI
+            return `<div class="certificate">
+                        <div style="font-size: 5em;">🏆</div><h2 style="font-size: 2.5em; margin-bottom: 20px; color: var(--accent-teal);">Sub-Materi Selesai!</h2>
+                        <p style="font-size: 1.3em; margin: 20px 0;">SELAMAT!</p>
+                        <p style="font-size: 1.1em; line-height: 1.6;">Kamu telah berhasil menyelesaikan topik <strong>Esensi Logaritma</strong>.</p>
+                    </div>
+                    <div class="button-group">
+                        <a href="../../dashboard.html#les" class="btn btn-primary">Kembali ke Daftar Materi</a>
+                    </div>`;
+        }
+
+        function updateStats() { const level = state.currentQuiz || 'LOTS'; document.getElementById('attemptsLeft').textContent = state.attempts[level]; document.getElementById('passCount').textContent = `${state.passCount[level]}/2`; }
+        function startLOTS() { startQuiz('LOTS'); }
+        function startMOTS() { startQuiz('MOTS'); }
+        function startHOTS() { startQuiz('HOTS'); }
+        function resetSystem() { window.location.href = '../../dashboard.html#les'; }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('step0').classList.add('completed');
+            startQuiz('LOTS');
+        });
+    </script>
+</body>
+</html>
