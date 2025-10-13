@@ -6,12 +6,10 @@
     <title>Latihan Soal 3: Esensi Logaritma</title>
 
     <script>
-        // --- KONFIGURASI PENTING UNTUK HALAMAN INI ---
-        const subMateriId = 'log_1';      // ID Peta Belajar Induk
-        const thisStageId = 'latihan3';   // ID Tahap INI
-        const previousStageId = 'latihan2';   // ID Tahap SEBELUMNYA
+        const subMateriId = 'log_1';
+        const thisStageId = 'latihan3';
+        const previousStageId = 'latihan2';
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwtP8HaiUAQdEPuxKh-hQ9_3WlN0MHgaLtidS1XJykKU1tFmvF1exfdrgaZJY1rCs/exec";
-        // ----------------------------------------------
 
         (function secureContentPage() {
             document.documentElement.style.visibility = 'hidden';
@@ -172,7 +170,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Menggunakan variabel dari skrip penjaga di <head>
             const ROADMAP_PATH = './index.html';
 
             const fileInput = document.getElementById('combined_upload');
@@ -195,24 +192,42 @@
 
             closeWarningBtn.addEventListener('click', () => { warningModal.classList.remove('active'); });
 
-            function showNotification(message, type) { /* ... (Sama seperti kode Anda) ... */ }
-            fileInput.addEventListener('change', (event) => { /* ... (Sama seperti kode Anda) ... */ });
+            function showNotification(message, type) {
+                toast.textContent = message;
+                toast.className = `toast-notification ${type} show`;
+                setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            }
+
+            fileInput.addEventListener('change', (event) => {
+                const fileName = event.target.files[0]?.name || 'Belum ada file dipilih';
+                document.querySelector('.file-name-display').textContent = fileName;
+            });
 
             backLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                if (!isSubmitted) { backWarningModal.classList.add('active'); } 
-                else { window.location.href = ROADMAP_PATH; }
+                if (!isSubmitted) { 
+                    backWarningModal.classList.add('active'); 
+                } else { 
+                    window.location.href = ROADMAP_PATH; 
+                }
             });
 
             closeBackWarningBtn.addEventListener('click', () => { backWarningModal.classList.remove('active'); });
 
             submitButton.addEventListener('click', () => {
-                if (fileInput.files.length === 0) { showNotification('Harap upload file jawaban Anda.', 'error'); return; }
+                if (fileInput.files.length === 0) { 
+                    showNotification('Harap upload file jawaban Anda.', 'error'); 
+                    return; 
+                }
                 confirmationModal.classList.add('active');
             });
 
             cancelSubmitBtn.addEventListener('click', () => confirmationModal.classList.remove('active'));
-            confirmationModal.addEventListener('click', (e) => { if (e.target === confirmationModal) { confirmationModal.classList.remove('active'); } });
+            confirmationModal.addEventListener('click', (e) => { 
+                if (e.target === confirmationModal) { 
+                    confirmationModal.classList.remove('active'); 
+                } 
+            });
 
             confirmSubmitBtn.addEventListener('click', () => {
                 confirmationModal.classList.remove('active');
@@ -223,9 +238,11 @@
                 kirimKeTelegram(formData);
             });
 
+            // ✅ PERBAIKAN: Fungsi ini dipanggil SEBELUM kirim Telegram
             function markStageCompleted() {
                 const storageKey = `progress_${subMateriId}_${thisStageId}`;
                 localStorage.setItem(storageKey, 'completed');
+                console.log(`✅ Progress disimpan: ${storageKey} = completed`);
             }
 
             async function kirimKeTelegram(formData) {
@@ -236,8 +253,20 @@
 
                 try {
                     const timestamp = new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' });
-                    const pesanPembuka = `📝 *LATIHAN SOAL 3: ESENSI LOGARITMA*\n\n` + `👤 Nama: ${namaUser}\n` + `🕐 Waktu: ${timestamp}\n` + `━━━━━━━━━━━━━━━━━━`;
-                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CHAT_ID, text: pesanPembuka, parse_mode: 'Markdown' }) });
+                    const pesanPembuka = `📝 *LATIHAN SOAL 3: ESENSI LOGARITMA*\n\n` + 
+                                       `👤 Nama: ${namaUser}\n` + 
+                                       `🕐 Waktu: ${timestamp}\n` + 
+                                       `━━━━━━━━━━━━━━━━━━`;
+                    
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' }, 
+                        body: JSON.stringify({ 
+                            chat_id: CHAT_ID, 
+                            text: pesanPembuka, 
+                            parse_mode: 'Markdown' 
+                        }) 
+                    });
 
                     const file = formData.get('jawaban_soal');
                     if (file) {
@@ -245,12 +274,20 @@
                         fileFormData.append('chat_id', CHAT_ID);
                         fileFormData.append('document', file);
                         fileFormData.append('caption', `📄 Jawaban Lengkap Soal 1-6 - ${namaUser}`);
-                        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, { method: 'POST', body: fileFormData });
+                        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, { 
+                            method: 'POST', 
+                            body: fileFormData 
+                        });
                         if (!response.ok) throw new Error('Gagal mengirim file');
                     }
                     
-                    markStageCompleted(); // <-- Panggil fungsi ini setelah berhasil
+                    // ✅ PERBAIKAN: Tandai selesai SEBELUM tampilkan modal sukses
+                    markStageCompleted();
                     isSubmitted = true;
+                    
+                    // Tunggu sebentar agar localStorage ter-save
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
                     successModal.classList.add('active');
                     
                     let countdown = 10;
