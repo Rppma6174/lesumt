@@ -6,29 +6,20 @@
     <title>Peta Belajar: Sifat Dasar Logaritma</title>
 
     <script>
-        // --- SCRIPT PENJAGA KEAMANAN ---
-        // 1. KONFIGURASI PENTING
-        // ID unik untuk halaman peta belajar ini. Ganti sesuai materi.
-        const subMateriId = 'log_1'; 
-        // URL Apps Script terbaru Anda.
+        // --- KONFIGURASI PENTING UNTUK HALAMAN INI ---
+        const subMateriId = 'log_1';
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwtP8HaiUAQdEPuxKh-hQ9_3WlN0MHgaLtidS1XJykKU1tFmvF1exfdrgaZJY1rCs/exec";
+        // ----------------------------------------------
 
-        // 2. FUNGSI PENJAGA UTAMA (jangan diubah)
         (async function securePage() {
-            // Sembunyikan konten halaman terlebih dahulu untuk mencegah "kedipan"
             document.documentElement.style.visibility = 'hidden';
-
-            // Cek #1: Apakah pengguna sudah login?
             const loggedInUserData = sessionStorage.getItem('loggedInUser');
             if (!loggedInUserData) {
                 alert("Akses ditolak. Silakan login terlebih dahulu.");
-                window.location.href = '../login.html'; // Sesuaikan path jika direktori Anda berbeda
+                window.location.href = '../login.html';
                 return;
             }
-
             const user = JSON.parse(loggedInUserData);
-
-            // Cek #2: Apakah pengguna punya izin untuk halaman INI?
             try {
                 const res = await fetch(`${GAS_WEB_APP_URL}?action=getProgress&user=${user.username}`);
                 const progressResult = await res.json();
@@ -37,7 +28,6 @@
                 const userProgress = progressResult.data;
                 let hasAccess = false;
                 
-                // Objek ini harus sama persis dengan yang ada di dashboard.html agar logika pengecekan konsisten
                 const allSubjects = {
                     logaritma: { name: "Logaritma", subMateri: [ { id: "log_1" }, { id: "log_2" }, { id: "log_3" } ] },
                     fungsi_kuadrat: { name: "Fungsi Kuadrat", subMateri: [ { id: "fk_1" }, { id: "fk_2" } ] }
@@ -46,26 +36,23 @@
                 for (const subjectKey in allSubjects) {
                     const subject = allSubjects[subjectKey];
                     const subMateriIndex = subject.subMateri.findIndex(sub => sub.id === subMateriId);
-                    
-                    if (subMateriIndex !== -1) { // Jika ID halaman ini ditemukan
-                        if (subMateriIndex === 0) { // Materi pertama dari setiap bab selalu terbuka
+                    if (subMateriIndex !== -1) {
+                        if (subMateriIndex === 0) {
                             hasAccess = true;
                         } else {
-                            // Materi selanjutnya terbuka jika materi SEBELUMNYA sudah ada nilainya
                             const prevSubMateriId = subject.subMateri[subMateriIndex - 1].id;
                             if (userProgress[prevSubMateriId] !== undefined && userProgress[prevSubMateriId] !== "") {
                                 hasAccess = true;
                             }
                         }
-                        break; // Hentikan loop jika materi sudah ditemukan
+                        break;
                     }
                 }
 
                 if (!hasAccess) {
                     alert("Akses ditolak. Selesaikan materi sebelumnya terlebih dahulu.");
-                    window.location.href = '../dashboard.html#les'; // Arahkan ke halaman daftar materi
+                    window.location.href = '../dashboard.html#les';
                 } else {
-                    // Jika semua pemeriksaan lolos, tampilkan halaman
                     document.documentElement.style.visibility = 'visible';
                 }
             } catch (error) {
@@ -75,7 +62,6 @@
             }
         })();
     </script>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -116,44 +102,12 @@
         .roadmap-stage.active .stage-content { border-color: var(--primary-purple); transform: scale(1.02); }
         .roadmap-stage.active:hover .stage-content { background-color: #2a2a2a; }
         .roadmap-stage.locked { pointer-events: none; opacity: 0.5; }
-
-        /* ===== [BARU] GAYA UNTUK TOMBOL KEMBALI MENGAMBANG ===== */
-        .floating-back-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 55px;
-            height: 55px;
-            background-color: var(--primary-purple);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            z-index: 999;
-        }
-        .floating-back-btn:hover {
-            transform: scale(1.1);
-            background-color: var(--secondary-purple);
-        }
-        .floating-back-btn svg {
-            width: 28px;
-            height: 28px;
-        }
-        .back-link {
-            position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;
-            background-color: var(--primary-purple); color: white; width: 50px; height: 50px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: transform 0.2s ease;
-        }
-        .back-link:hover { transform: scale(1.1); }
+        .floating-back-btn { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: var(--primary-purple); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); text-decoration: none; transition: all 0.3s ease; z-index: 999; }
+        .floating-back-btn:hover { transform: scale(1.1); background-color: var(--secondary-purple); }
+        .floating-back-btn .fas { font-size: 1.2rem; }
     </style>
 </head>
-<body>
+<body style="visibility: hidden;">
     <div class="header">
         <h1>Sifat Dasar Logaritma</h1>
         <p>Selesaikan semua tahapan di bawah ini untuk menguasai materi.</p>
@@ -162,7 +116,7 @@
     <div class="roadmap-container" id="roadmap">
         </div>
 
-    <a href="../#les" class="back-link" title="Kembali ke Daftar Materi">
+    <a href="../dashboard.html#les" class="floating-back-btn" title="Kembali ke Daftar Materi">
         <i class="fas fa-arrow-left"></i>
     </a>
 
@@ -184,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderRoadmap() {
         roadmapContainer.innerHTML = ""; // Kosongkan
-        let isPrevStageCompleted = true; // Anggap "start" sudah selesai
+        let isPrevStageCompleted = true; // Anggap "start" (tahap sebelum 'materi') sudah selesai
 
         stages.forEach((stage, index) => {
             const storageKey = `progress_${SUB_MATERI_ID}_${stage.id}`;
@@ -205,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const stageHTML = `
                 <a href="${isLocked ? '#' : stage.url}" class="roadmap-stage ${stageClass}">
                     <div class="stage-dot">
-                        ${isCompleted ? '✔️' : (isLocked ? '🔒' : index + 1)}
+                        ${isCompleted ? '✔' : (isLocked ? '🔒' : index + 1)}
                     </div>
                     <div class="stage-content">
                         <h3>${stage.title}</h3>
@@ -215,14 +169,20 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             roadmapContainer.innerHTML += stageHTML;
 
-            // Update status untuk iterasi selanjutnya
+            // Update status untuk iterasi selanjutnya. Jika tahap ini belum selesai,
+            // maka tahap berikutnya pasti terkunci.
             if (!isCompleted) {
                 isPrevStageCompleted = false;
             }
         });
     }
 
+    // Panggil renderRoadmap saat halaman dimuat
     renderRoadmap();
+    
+    // Panggil lagi renderRoadmap saat halaman mendapatkan fokus (misal, saat kembali dari tab lain)
+    // Ini untuk memastikan statusnya selalu yang terbaru.
+    window.addEventListener('focus', renderRoadmap);
 });
 </script>
 
