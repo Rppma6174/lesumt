@@ -11,8 +11,8 @@
         const previousStageId = 'latihan2';
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwtP8HaiUAQdEPuxKh-hQ9_3WlN0MHgaLtidS1XJykKU1tFmvF1exfdrgaZJY1rCs/exec";
 
-        (function secureContentPage() {
-            document.documentElement.style.visibility = 'hidden';
+        // Script keamanan - dijalankan setelah DOM ready
+        window.addEventListener('DOMContentLoaded', function() {
             const loggedInUserData = sessionStorage.getItem('loggedInUser');
             if (!loggedInUserData) {
                 alert("Akses ditolak. Silakan login terlebih dahulu.");
@@ -21,14 +21,19 @@
             }
             if (previousStageId) {
                 const prevStageKey = `progress_${subMateriId}_${previousStageId}`;
-                if (localStorage.getItem(prevStageKey) !== 'completed') {
+                const isPrevCompleted = localStorage.getItem(prevStageKey) === 'completed';
+                console.log(`🔍 Cek akses: ${prevStageKey} = ${isPrevCompleted ? 'LULUS' : 'TERKUNCI'}`);
+                
+                if (!isPrevCompleted) {
                     alert("Akses ditolak. Selesaikan tahap sebelumnya pada Peta Belajar.");
                     window.location.href = './index.html'; 
                     return;
                 }
             }
-            document.documentElement.style.visibility = 'visible';
-        })();
+            // Tampilkan halaman
+            document.body.style.visibility = 'visible';
+            console.log('✅ Halaman berhasil dimuat');
+        });
     </script>
     <link rel="icon" type="image/png" href="../UMT-Logo - Copy.png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
@@ -93,7 +98,7 @@
         p, li { color: var(--text-secondary); }
     </style>
 </head>
-<body style="visibility: hidden;">
+<body>
     <div id="toast" class="toast-notification">Pesan Notifikasi</div>
 
     <div id="warning-modal" class="modal-overlay active">
