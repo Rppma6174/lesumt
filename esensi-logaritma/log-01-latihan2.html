@@ -5,56 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Latihan Soal 2: Esensi Logaritma - UMT Learning</title>
 
-        <script>
-        // --- SCRIPT PENJAGA KEAMANAN ---
-        // 1. KONFIGURASI PENTING
-        const subMateriId = 'log_1'; // ID UNIK UNTUK HALAMAN INI
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwtP8HaiUAQdEPuxKh-hQ9_3WlN0MHgaLtidS1XJykKU1tFmvF1exfdrgaZJY1rCs/exec";
+    <script>
+        // --- KONFIGURASI PENTING UNTUK HALAMAN INI ---
+        const subMateriId = 'log_1';      // ID Peta Belajar Induk (contoh: log_1, fk_1, dll)
+        const thisStageId = 'latihan2';     // ID Tahap INI (contoh: materi, latihan1, dll)
+        const previousStageId = 'latihan1';       // ID Tahap SEBELUMNYA (kosongkan jika ini tahap pertama)
+        // ----------------------------------------------
 
-        // 2. FUNGSI PENJAGA UTAMA (jangan diubah)
-        (async function securePage() {
-            document.body.style.display = 'none'; // Sembunyikan konten dulu
+        (function secureContentPage() {
+            // Sembunyikan konten halaman terlebih dahulu
+            document.documentElement.style.visibility = 'hidden';
+
+            // Cek #1: Apakah pengguna sudah login?
             const loggedInUserData = sessionStorage.getItem('loggedInUser');
             if (!loggedInUserData) {
                 alert("Akses ditolak. Silakan login terlebih dahulu.");
-                window.location.href = '../../login.html'; // Path kembali ke login
+                window.location.href = '../../login.html';
                 return;
             }
-            const user = JSON.parse(loggedInUserData);
-            try {
-                const res = await fetch(`${GAS_WEB_APP_URL}?action=getProgress&user=${user.username}`);
-                const progressResult = await res.json();
-                if (progressResult.status !== "success") throw new Error("Gagal memverifikasi progres.");
-                
-                const userProgress = progressResult.data;
-                let hasAccess = false;
-                
-                // Objek ini harus sama persis dengan yang ada di dashboard.html
-                const allSubjects = { logaritma: { name: "Logaritma", subMateri: [ { id: "log_1", title: "1. Sifat Dasar" }, { id: "log_2", title: "2. Persamaan" }, { id: "log_3", title: "3. Pertidaksamaan" } ] }, fungsi_kuadrat: { name: "Fungsi Kuadrat", subMateri: [ { id: "fk_1", title: "1. Grafik" }, { id: "fk_2", title: "2. Sumbu Simetri" } ] } };
-                
-                for (const subjectKey in allSubjects) {
-                    const subject = allSubjects[subjectKey];
-                    const subMateriIndex = subject.subMateri.findIndex(sub => sub.id === subMateriId);
-                    if (subMateriIndex !== -1) {
-                        if (subMateriIndex === 0) { hasAccess = true; } 
-                        else {
-                            const prevSubMateriId = subject.subMateri[subMateriIndex - 1].id;
-                            if (userProgress[prevSubMateriId] !== undefined && userProgress[prevSubMateriId] !== "") { hasAccess = true; }
-                        }
-                        break;
-                    }
+
+            // Cek #2: Apakah tahap sebelumnya sudah selesai?
+            // Jika previousStageId tidak kosong, lakukan pengecekan.
+            if (previousStageId) {
+                const prevStageKey = `progress_${subMateriId}_${previousStageId}`;
+                const isPrevStageCompleted = localStorage.getItem(prevStageKey) === 'completed';
+
+                if (!isPrevStageCompleted) {
+                    alert("Akses ditolak. Selesaikan tahap sebelumnya pada Peta Belajar.");
+                    // Kembalikan ke halaman peta belajar induknya
+                    window.location.href = 'index.html'; 
+                    return;
                 }
-                if (!hasAccess) {
-                    alert("Akses ditolak. Selesaikan materi sebelumnya terlebih dahulu.");
-                    window.location.href = '../../dashboard.html';
-                } else {
-                    document.body.style.display = 'block'; // Tampilkan konten jika akses diizinkan
-                }
-            } catch (error) {
-                alert("Terjadi kesalahan saat verifikasi akses.");
-                console.error("Verification Error:", error);
-                window.location.href = '../../dashboard.html';
             }
+
+            // Jika semua pemeriksaan lolos, tampilkan halaman
+            document.documentElement.style.visibility = 'visible';
         })();
     </script>
     
