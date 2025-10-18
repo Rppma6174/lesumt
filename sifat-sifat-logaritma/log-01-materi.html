@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tahap 2: Sifat-Sifat Logaritma - UMT Learning</title>
+
+    <script>
+        // --- KONFIGURASI PENTING UNTUK HALAMAN INI ---
+        const subMateriId = 'log_2';       // ID Peta Belajar Induk (contoh: log_1, log_2, dll)
+        const thisStageId = 'materi';      // ID Tahap INI (contoh: materi, latihan1, dll)
+        const previousStageId = 'latihan1';// ID Tahap SEBELUMNYA (diisi sesuai alur peta belajar)
+        // ----------------------------------------------
+
+        (function secureContentPage() {
+            document.documentElement.style.visibility = 'hidden';
+            const loggedInUserData = sessionStorage.getItem('loggedInUser');
+            if (!loggedInUserData) {
+                alert("Akses ditolak. Silakan login terlebih dahulu.");
+                window.location.href = '../../login.html';
+                return;
+            }
+            if (previousStageId) {
+                const prevStageKey = `progress_${subMateriId}_${previousStageId}`;
+                const isPrevStageCompleted = localStorage.getItem(prevStageKey) === 'completed';
+                if (!isPrevStageCompleted) {
+                    alert("Akses ditolak. Selesaikan tahap sebelumnya pada Peta Belajar.");
+                    window.location.href = 'index.html'; // Sesuaikan path ini ke halaman roadmap Anda
+                    return;
+                }
+            }
+            document.documentElement.style.visibility = 'visible';
+        })();
+    </script>
+    
+    <link rel="icon" type="image/png" href="../UMT-Logo - Copy.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+      MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary-purple: #8A2BE2;
+            --dark-bg: #141414;
+            --card-bg: #1c1c1c;
+            --border-color: #333;
+            --text-primary: #ffffff;
+            --text-secondary: #ccc;
+            --accent-green: #28a745;
+        }
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.7;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 2rem auto; 
+            padding: 1.5rem 2rem; 
+            background-color: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+        }
+        .back-link {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;
+            background-color: var(--primary-purple); color: white; width: 50px; height: 50px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
+        }
+        .back-link:hover { transform: scale(1.1); }
+        h1, h2 { color: var(--primary-purple); }
+        h1 { font-size: 2.2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1.5rem; font-weight: 700; }
+        h2 { font-size: 1.6rem; margin-top: 2.5rem; margin-bottom: 1rem; border-left: 4px solid var(--primary-purple); padding-left: 1rem; font-weight: 600; }
+        
+        .strategy-box {
+            background-color: rgba(40, 167, 69, 0.1);
+            border-left: 4px solid var(--accent-green);
+            padding: 1rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0;
+        }
+        
+        .explainer-button {
+            background: none; border: none; color: var(--text-secondary); font-size: 0.9em;
+            font-weight: 500; cursor: pointer; padding: 4px 8px; margin-top: 0.5rem;
+            border-radius: 6px; transition: background-color 0.2s; display: inline-flex; align-items: center;
+            border: 1px solid var(--border-color);
+        }
+        .explainer-button:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .explainer-button .fas { margin-left: 8px; transition: transform 0.3s ease; }
+        .explainer-button.active .fas { transform: rotate(90deg); }
+        .explainer-content {
+            margin-top: 1rem; padding: 1rem;
+            background-color: rgba(138, 43, 226, 0.08);
+            border-left: 4px solid var(--primary-purple);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .finish-button {
+            display: block; width: 100%; padding: 15px; background-color: var(--accent-green);
+            color: var(--text-primary); border: none; border-radius: 8px; font-size: 18px;
+            font-weight: 600; text-align: center; cursor: pointer; margin-top: 3rem;
+            transition: all 0.3s ease;
+        }
+        .finish-button:hover { background-color: #218838; transform: translateY(-2px); }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; z-index: 2000;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            background-color: var(--card-bg); padding: 30px; border-radius: 15px;
+            border: 1px solid var(--border-color); box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            width: 90%; max-width: 500px; text-align: center;
+            transform: scale(0.9); transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-content h3 { margin-top: 0; color: var(--primary-purple); font-weight: 600; font-size: 1.5rem; }
+        .modal-content p { color: var(--text-secondary); margin-bottom: 25px; line-height: 1.6; }
+        .modal-footer { display: flex; gap: 10px; }
+        .modal-footer button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .modal-footer .confirm-btn { background-color: var(--accent-green); color: white; }
+        .modal-footer .confirm-btn:hover { background-color: #218838; }
+
+        .success-icon { font-size: 4rem; color: var(--accent-green); margin-bottom: 1rem; }
+
+        p, li, .explainer-content, .strategy-box { overflow-x: auto; padding-bottom: 8px; color: var(--text-secondary); }
+        p strong, li strong { color: var(--text-primary); }
+        blockquote {
+            margin-left: 0; padding-left: 1.5rem;
+            border-left: 4px solid var(--primary-purple);
+            font-style: italic; font-size: 1.1em;
+            color: var(--text-primary);
+        }
+        ::-webkit-scrollbar { height: 8px; width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--card-bg); }
+        ::-webkit-scrollbar-thumb { background-color: #333; border-radius: 4px; border: 2px solid var(--card-bg); }
+        ::-webkit-scrollbar-thumb:hover { background-color: #555; }
+    </style>
+</head>
+<body>
+    <div id="finish-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Konfirmasi Penyelesaian</h3>
+            <p>Apakah Anda sudah selesai membaca dan memahami seluruh materi ini?</p>
+            <p style="font-size: 0.9rem; color: #888;">Progress Anda akan disimpan dan tahapan berikutnya akan terbuka.</p>
+            <div class="modal-footer">
+                <button id="cancel-finish-btn" style="background-color: #555; color: white;">Belum</button>
+                <button id="confirm-finish-btn" class="confirm-btn">Ya, Sudah Selesai</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="success-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="success-icon">✅</div>
+            <h3>Materi Selesai!</h3>
+            <p>Progress Anda telah disimpan. Tahapan berikutnya sudah terbuka.</p>
+            <p style="font-weight: 600; color: var(--accent-green);">Anda akan diarahkan kembali ke roadmap...</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <a href="index.html" class="back-link" title="Kembali ke Roadmap"> <i class="fas fa-arrow-left"></i>
+        </a>
+        
+        <h1>Tahap 2: Sifat-Sifat Logaritma</h1>
+        <p>
+            Setelah memahami bahwa logaritma adalah "pertanyaan terbalik" dari eksponen, kita akan menemukan bahwa semua "aturan main" atau sifat-sifat logaritma sebenarnya adalah aturan eksponen yang sama, hanya saja ditulis dalam format yang berbeda. Memahami hubungan ini adalah kunci untuk menguasai logaritma tanpa harus menghafal mati.
+        </p>
+
+        <h2>Sifat Inti 1: Penjumlahan Logaritma (Perkalian Eksponen)</h2>
+        <blockquote>
+            Logaritma dari sebuah perkalian adalah <strong>penjumlahan</strong> dari masing-masing logaritmanya.
+        </blockquote>
+        $$ ^a\log(xy) = ^a\log x + ^a\log y $$
+        <button class="explainer-button">Dari mana sifat ini berasal? <i class="fas fa-chevron-right"></i></button>
+        <div class="explainer-content hidden">
+            <p>Ingat kembali sifat eksponen: $a^m \cdot a^n = a^{m+n}$. Mari kita gunakan ini.</p>
+            <ol>
+                <li>Misalkan $^a\log x = m$ (artinya $a^m = x$) dan $^a\log y = n$ (artinya $a^n = y$).</li>
+                <li>Jika kita kalikan $x$ dan $y$, kita dapatkan $xy = a^m \cdot a^n = a^{m+n}$.</li>
+                <li>Sekarang, ubah bentuk eksponen $xy = a^{m+n}$ kembali ke bentuk logaritma: $^a\log(xy) = m+n$.</li>
+                <li>Ganti kembali $m$ dan $n$ dengan definisi awalnya: $^a\log(xy) = ^a\log x + ^a\log y$. Terbukti!</li>
+            </ol>
+        </div>
+        
+        <h2>Sifat Inti 2: Pengurangan Logaritma (Pembagian Eksponen)</h2>
+        <blockquote>
+            Logaritma dari sebuah pembagian adalah <strong>pengurangan</strong> dari masing-masing logaritmanya.
+        </blockquote>
+        $$ ^a\log\left(\frac{x}{y}\right) = ^a\log x - ^a\log y $$
+        
+        <h2>Sifat Inti 3: Pangkat dalam Logaritma (Perkalian Pangkat)</h2>
+        <blockquote>
+            Pangkat dari numerus dapat "turun" menjadi <strong>koefisien (perkalian)</strong> di depan logaritma.
+        </blockquote>
+        $$ ^a\log(x^n) = n \cdot ^a\log x $$
+         <button class="explainer-button">Dari mana sifat pangkat ini berasal? <i class="fas fa-chevron-right"></i></button>
+        <div class="explainer-content hidden">
+            <p>Ini berasal dari sifat eksponen $(a^m)^n = a^{mn}$.</p>
+            <ol>
+                <li>Misalkan $^a\log x = m$ (artinya $a^m = x$).</li>
+                <li>Jika kita pangkatkan $x$ dengan $n$, kita dapatkan $x^n = (a^m)^n = a^{mn}$.</li>
+                <li>Ubah bentuk $x^n = a^{mn}$ kembali ke bentuk logaritma: $^a\log(x^n) = mn$.</li>
+                <li>Ganti kembali $m$ dengan definisi awalnya: $^a\log(x^n) = n \cdot (^a\log x)$. Terbukti!</li>
+            </ol>
+        </div>
+
+        <h2>Sifat-Sifat Lanjutan: Perkakas Tambahan</h2>
+        <p>Selain tiga sifat inti di atas, ada beberapa sifat turunan yang sangat berguna untuk manipulasi aljabar.</p>
+        <ul>
+            <li>
+                <strong>Mengubah Basis (Change of Base):</strong> Ini adalah "sifat kalkulator", memungkinkan kita menghitung logaritma basis apa pun.
+                $$ ^a\log b = \frac{^c\log b}{^c\log a} $$
+            </li>
+            <li>
+                <strong>Hubungan Invers Basis:</strong>
+                $$ ^a\log b = \frac{1}{^b\log a} $$
+            </li>
+            <li>
+                <strong>Perpangkatan Logaritma:</strong>
+                $$ a^{^a\log b} = b $$
+            </li>
+            <li>
+                <strong>Sifat Pangkat pada Basis dan Numerus:</strong>
+                $$ ^{a^n}\log b^m = \frac{m}{n} \cdot ^a\log b $$
+            </li>
+        </ul>
+
+        <div class="strategy-box">
+            <b>Pola Pikir Menerapkan Sifat Logaritma:</b>
+            <ol>
+                <li><strong>Tujuan Akhir:</strong> Apakah Anda ingin menggabungkan beberapa logaritma menjadi satu (gunakan sifat 1 & 2 dari kanan ke kiri) atau memecah satu logaritma menjadi beberapa bagian (gunakan dari kiri ke kanan)?</li>
+                <li><strong>Samakan Basis:</strong> Sifat penjumlahan dan pengurangan hanya bekerja jika basisnya sama. Jika belum sama, coba gunakan sifat ganti basis terlebih dahulu.</li>
+                <li><strong>Sederhanakan Numerus:</strong> Ubah numerus menjadi bentuk pangkat jika memungkinkan. Contoh: lihat 16 sebagai $2^4$, atau $\sqrt{3}$ sebagai $3^{1/2}$.</li>
+            </ol>
+        </div>
+
+        <button id="finish-reading-btn" class="finish-button">
+            <i class="fas fa-check-circle"></i> Saya Sudah Selesai Membaca
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- KONFIGURASI DARI ATAS HALAMAN ---
+            // const subMateriId = 'log_2'; (sudah didefinisikan di atas)
+            // const thisStageId = 'materi'; (sudah didefinisikan di atas)
+            const ROADMAP_PATH = 'index.html'; // Sesuaikan dengan path ke halaman roadmap Anda
+
+            const finishBtn = document.getElementById('finish-reading-btn');
+            const finishModal = document.getElementById('finish-modal');
+            const successModal = document.getElementById('success-modal');
+            const confirmFinishBtn = document.getElementById('confirm-finish-btn');
+            const cancelFinishBtn = document.getElementById('cancel-finish-btn');
+
+            document.querySelectorAll('.explainer-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    button.classList.toggle('active');
+                    const content = button.nextElementSibling;
+                    const isOpening = content.classList.contains('hidden');
+                    content.classList.toggle('hidden');
+                    if (isOpening) {
+                        if(window.MathJax) { MathJax.typesetPromise([content]); }
+                    }
+                });
+            });
+
+            finishBtn.addEventListener('click', () => {
+                finishModal.classList.add('active');
+            });
+            
+            cancelFinishBtn.addEventListener('click', () => {
+                finishModal.classList.remove('active');
+            });
+            
+            confirmFinishBtn.addEventListener('click', () => {
+                const storageKey = `progress_${subMateriId}_${thisStageId}`;
+                localStorage.setItem(storageKey, 'completed');
+                console.log(`Progress saved: ${storageKey} = completed`);
+
+                finishModal.classList.remove('active');
+                successModal.classList.add('active');
+
+                setTimeout(() => {
+                    window.location.href = ROADMAP_PATH;
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
