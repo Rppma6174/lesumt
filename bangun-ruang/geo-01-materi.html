@@ -152,8 +152,26 @@
     </style>
 </head>
 <body>
-    <div id="finish-modal" class="modal-overlay"> </div>
-    <div id="success-modal" class="modal-overlay"> </div>
+    <div id="finish-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Konfirmasi Penyelesaian</h3>
+        <p>Apakah Anda sudah selesai membaca dan memahami seluruh materi ini?</p>
+        <p style="font-size: 0.9rem; color: #888;">Progress Anda akan disimpan dan tahapan berikutnya akan terbuka.</p>
+        <div class="modal-footer">
+            <button id="cancel-finish-btn" style="background-color: #555; color: white;">Belum</button>
+            <button id="confirm-finish-btn" class="confirm-btn">Ya, Sudah Selesai</button>
+        </div>
+    </div>
+    </div>
+
+    <div id="success-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="success-icon">✅</div>
+            <h3>Materi Selesai!</h3>
+            <p>Progress Anda telah disimpan. Tahapan berikutnya sudah terbuka.</p>
+            <p style="font-weight: 600; color: var(--accent-green);">Anda akan diarahkan kembali...</p>
+        </div>
+    </div>
 
     <div class="container">
         <a href="index.html" class="back-link" title="Kembali ke Roadmap">
@@ -378,91 +396,59 @@
         </button>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- KONFIGURASI DARI ATAS HALAMAN ---
-            const ROADMAP_PATH = 'index.html'; // Sesuaikan dengan path ke halaman roadmap Anda
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // ============ KONFIGURASI PROGRESS ============
+        // Pastikan variabel ini sesuai dengan halaman Geometri
+        const SUB_MATERI_ID = "geo_1";
+        const CURRENT_STAGE_ID = "materi";
+        const ROADMAP_PATH = "index.html"; // Ini adalah path ke halaman Peta Belajar Geometri
+        // ==============================================
 
-            const finishBtn = document.getElementById('finish-reading-btn');
-            const finishModal = document.querySelector('#finish-modal'); // Akan di-generate jika tidak ada
-            const successModal = document.querySelector('#success-modal'); // Akan di-generate jika tidak ada
+        const finishBtn = document.getElementById('finish-reading-btn');
+        const finishModal = document.getElementById('finish-modal');
+        const successModal = document.getElementById('success-modal');
+        const confirmFinishBtn = document.getElementById('confirm-finish-btn');
+        const cancelFinishBtn = document.getElementById('cancel-finish-btn');
 
-            // Logika untuk tombol penjelasan (jika ada)
-            document.querySelectorAll('.explainer-button').forEach(button => {
-                button.addEventListener('click', () => {
-                    button.classList.toggle('active');
-                    const content = button.nextElementSibling;
-                    const isOpening = content.classList.contains('hidden');
+        // Logika untuk tombol penjelasan (jika ada)
+        document.querySelectorAll('.explainer-button').forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.toggle('active');
+                const content = button.nextElementSibling;
+                if (content) {
                     content.classList.toggle('hidden');
-                    if (isOpening) {
-                        if(window.MathJax) { MathJax.typesetPromise([content]); }
-                    }
-                });
+                }
             });
-
-            // Logika Tombol Selesai (dengan pembuatan modal jika belum ada)
-            if (finishBtn) {
-                finishBtn.addEventListener('click', () => {
-                    const modal = document.getElementById('finish-modal') || createFinishModal();
-                    modal.classList.add('active');
-                });
-            }
-
-            function createFinishModal() {
-                const modalHTML = `
-                <div id="finish-modal" class="modal-overlay">
-                    <div class="modal-content">
-                        <h3>Konfirmasi Penyelesaian</h3>
-                        <p>Apakah Anda sudah selesai membaca dan memahami seluruh materi ini?</p>
-                        <p style="font-size: 0.9rem; color: #888;">Progress Anda akan disimpan dan tahapan berikutnya akan terbuka.</p>
-                        <div class="modal-footer">
-                            <button id="cancel-finish-btn" style="background-color: #555; color: white;">Belum</button>
-                            <button id="confirm-finish-btn" class="confirm-btn">Ya, Sudah Selesai</button>
-                        </div>
-                    </div>
-                </div>`;
-                document.body.insertAdjacentHTML('beforeend', modalHTML);
-                document.getElementById('cancel-finish-btn').addEventListener('click', () => document.getElementById('finish-modal').classList.remove('active'));
-                document.getElementById('confirm-finish-btn').addEventListener('click', handleConfirmFinish);
-                return document.getElementById('finish-modal');
-            }
-            
-            function createSuccessModal() {
-                 const modalHTML = `
-                <div id="success-modal" class="modal-overlay">
-                    <div class="modal-content">
-                        <div class="success-icon">✅</div>
-                        <h3>Materi Selesai!</h3>
-                        <p>Progress Anda telah disimpan. Tahapan berikutnya sudah terbuka.</p>
-                        <p style="font-weight: 600; color: var(--accent-green);">Anda akan diarahkan kembali...</p>
-                    </div>
-                </div>`;
-                 document.body.insertAdjacentHTML('beforeend', modalHTML);
-                 return document.getElementById('success-modal');
-            }
-
-            function handleConfirmFinish() {
-                const storageKey = `progress_${subMateriId}_${thisStageId}`;
-                localStorage.setItem(storageKey, 'completed');
-                console.log(`Progress saved: ${storageKey} = completed`);
-
-                const finishModal = document.getElementById('finish-modal');
-                if (finishModal) finishModal.classList.remove('active');
-                
-                const successModal = document.getElementById('success-modal') || createSuccessModal();
-                successModal.classList.add('active');
-
-                setTimeout(() => {
-                    window.location.href = ROADMAP_PATH;
-                }, 2000);
-            }
-            
-            // Event listener untuk modal yang sudah ada
-            const confirmBtn = document.getElementById('confirm-finish-btn');
-            const cancelBtn = document.getElementById('cancel-finish-btn');
-            if(confirmBtn) confirmBtn.addEventListener('click', handleConfirmFinish);
-            if(cancelBtn) cancelBtn.addEventListener('click', () => document.getElementById('finish-modal').classList.remove('active'));
         });
-    </script>
+
+        // Tombol utama untuk menyelesaikan materi
+        finishBtn.addEventListener('click', () => {
+            finishModal.classList.add('active');
+        });
+
+        // Tombol "Belum" pada modal konfirmasi
+        cancelFinishBtn.addEventListener('click', () => {
+            finishModal.classList.remove('active');
+        });
+
+        // Tombol "Ya, Sudah Selesai" pada modal konfirmasi
+        confirmFinishBtn.addEventListener('click', () => {
+            // 1. Simpan progress ke localStorage
+            const storageKey = `progress_${SUB_MATERI_ID}_${CURRENT_STAGE_ID}`;
+            localStorage.setItem(storageKey, 'completed');
+            console.log(`Progress saved: ${storageKey} = completed`);
+
+            // 2. Tampilkan modal sukses
+            finishModal.classList.remove('active');
+            successModal.classList.add('active');
+
+            // 3. Arahkan kembali ke Peta Belajar setelah 2 detik
+            setTimeout(() => {
+                window.location.href = ROADMAP_PATH;
+            }, 2000);
+        });
+    });
+</script>
 </body>
 </html>
