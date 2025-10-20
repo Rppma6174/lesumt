@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometri: Jarak Titik, Garis, dan Bidang - UMT Learning</title>
+
+    <script>
+        // --- KONFIGURASI PENTING UNTUK HALAMAN INI ---
+        const subMateriId = 'geo_1';      // Ganti sesuai ID Peta Belajar Induk Anda
+        const thisStageId = 'materi';     // ID Tahap INI
+        const previousStageId = '';       // ID Tahap SEBELUMNYA (kosongkan jika ini tahap pertama)
+        // ----------------------------------------------
+
+        (function secureContentPage() {
+            document.documentElement.style.visibility = 'hidden';
+            const loggedInUserData = sessionStorage.getItem('loggedInUser');
+            if (!loggedInUserData) {
+                alert("Akses ditolak. Silakan login terlebih dahulu.");
+                window.location.href = '../../login.html'; // Sesuaikan path login Anda
+                return;
+            }
+            if (previousStageId) {
+                const prevStageKey = `progress_${subMateriId}_${previousStageId}`;
+                const isPrevCompleted = localStorage.getItem(prevStageKey) === 'completed';
+                if (!isPrevCompleted) {
+                    alert("Akses ditolak. Selesaikan tahap sebelumnya pada Peta Belajar.");
+                    window.location.href = 'index.html'; // Sesuaikan path roadmap Anda
+                    return;
+                }
+            }
+            document.documentElement.style.visibility = 'visible';
+        })();
+    </script>
+    
+    <link rel="icon" type="image/png" href="../UMT-Logo - Copy.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+      MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary-purple: #8A2BE2;
+            --dark-bg: #141414;
+            --card-bg: #1c1c1c;
+            --border-color: #333;
+            --text-primary: #ffffff;
+            --text-secondary: #ccc;
+            --accent-green: #28a745;
+            --accent-red: #F85149;
+        }
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.7;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 2rem auto; 
+            padding: 1.5rem 2rem; 
+            background-color: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+        }
+        .back-link {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;
+            background-color: var(--primary-purple); color: white; width: 50px; height: 50px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
+        }
+        .back-link:hover { transform: scale(1.1); }
+        h1, h2, h3 { color: var(--primary-purple); }
+        h1 { font-size: 2.2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1.5rem; font-weight: 700; }
+        h2 { font-size: 1.6rem; margin-top: 2.5rem; margin-bottom: 1rem; border-left: 4px solid var(--primary-purple); padding-left: 1rem; font-weight: 600; }
+        h3 { color: #A45EFF; margin-top: 2rem; }
+        .hidden { display: none; }
+        .svg-container { text-align: center; margin: 1.5rem 0; }
+        
+        .strategy-box {
+            background-color: rgba(40, 167, 69, 0.1);
+            border-left: 4px solid var(--accent-green);
+            padding: 1rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0;
+        }
+        
+        .explainer-button {
+            background: none; border: none; color: var(--text-secondary); font-size: 0.9em;
+            font-weight: 500; cursor: pointer; padding: 4px 8px; margin-top: 0.5rem;
+            border-radius: 6px; transition: background-color 0.2s; display: inline-flex; align-items: center;
+            border: 1px solid var(--border-color);
+        }
+        .explainer-button:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .explainer-button .fas { margin-left: 8px; transition: transform 0.3s ease; }
+        .explainer-button.active .fas { transform: rotate(90deg); }
+        .explainer-content {
+            margin-top: 1rem; padding: 1rem;
+            background-color: rgba(138, 43, 226, 0.08);
+            border-left: 4px solid var(--primary-purple);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .finish-button {
+            display: block; width: 100%; padding: 15px; background-color: var(--accent-green);
+            color: var(--text-primary); border: none; border-radius: 8px; font-size: 18px;
+            font-weight: 600; text-align: center; cursor: pointer; margin-top: 3rem;
+            transition: all 0.3s ease;
+        }
+        .finish-button:hover { background-color: #218838; transform: translateY(-2px); }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; z-index: 2000;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            background-color: var(--card-bg); padding: 30px; border-radius: 15px;
+            border: 1px solid var(--border-color); box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            width: 90%; max-width: 500px; text-align: center;
+            transform: scale(0.9); transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-content h3 { margin-top: 0; color: var(--primary-purple); font-weight: 600; font-size: 1.5rem; }
+        .modal-content p { color: var(--text-secondary); margin-bottom: 25px; line-height: 1.6; }
+        .modal-footer { display: flex; gap: 10px; }
+        .modal-footer button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .modal-footer .confirm-btn { background-color: var(--accent-green); color: white; }
+        .modal-footer .confirm-btn:hover { background-color: #218838; }
+
+        .success-icon { font-size: 4rem; color: var(--accent-green); margin-bottom: 1rem; }
+
+        p, li, .explainer-content, .strategy-box { overflow-x: auto; padding-bottom: 8px; color: var(--text-secondary); }
+        p strong, li strong { color: var(--text-primary); }
+        blockquote {
+            margin-left: 0; padding-left: 1.5rem;
+            border-left: 4px solid var(--primary-purple);
+            font-style: italic; font-size: 1.1em;
+            color: var(--text-primary);
+        }
+        ::-webkit-scrollbar { height: 8px; width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--card-bg); }
+        ::-webkit-scrollbar-thumb { background-color: #333; border-radius: 4px; border: 2px solid var(--card-bg); }
+        ::-webkit-scrollbar-thumb:hover { background-color: #555; }
+    </style>
+</head>
+<body>
+    <div id="finish-modal" class="modal-overlay"> </div>
+    <div id="success-modal" class="modal-overlay"> </div>
+
+    <div class="container">
+        <a href="index.html" class="back-link" title="Kembali ke Roadmap">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        
+        <h1>Geometri: Jarak dalam Ruang</h1>
+        <p>
+            Mempelajari jarak dalam ruang tiga dimensi (bangun ruang) adalah tentang membayangkan dan menarik garis. Kunci utamanya adalah mengubah masalah 3D menjadi masalah 2D yang bisa kita selesaikan, biasanya dengan menggunakan <strong>Teorema Pythagoras</strong> atau aturan trigonometri pada segitiga siku-siku.
+        </p>
+        <blockquote>
+            Prinsip Dasar: Jarak terpendek antara dua objek geometris selalu berupa ruas garis lurus yang <b>tegak lurus</b>.
+        </blockquote>
+
+        <h2>1. Jarak Antara Dua Titik (Titik ke Titik)</h2>
+        <p>
+            Ini adalah konsep jarak yang paling mendasar. Jarak antara titik A dan titik B adalah panjang ruas garis lurus yang menghubungkan kedua titik tersebut.
+        </p>
+        <p>
+            <strong>Strategi:</strong> Cari atau buatlah sebuah segitiga siku-siku di mana ruas garis AB menjadi <strong>sisi miring (hipotenusa)</strong>. Kemudian, gunakan Teorema Pythagoras ($a^2 + b^2 = c^2$) untuk mencari panjangnya.
+        </p>
+        <div class="svg-container">
+            <svg width="250" height="200" viewBox="0 0 250 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="#1c1c1c"/>
+                <path d="M 50 150 L 200 150 L 200 50 Z" fill="none" stroke="#ccc" stroke-width="2" stroke-dasharray="4"/>
+                <line x1="50" y1="150" x2="200" y2="50" stroke="#8A2BE2" stroke-width="3"/>
+                <circle cx="50" cy="150" r="5" fill="#f0f0f0"/><text x="35" y="160" font-size="16" fill="#f0f0f0">A</text>
+                <circle cx="200" cy="50" r="5" fill="#f0f0f0"/><text x="205" y="45" font-size="16" fill="#f0f0f0">B</text>
+                <circle cx="200" cy="150" r="5" fill="#f0f0f0"/><text x="205" y="160" font-size="16" fill="#f0f0f0">C</text>
+                <text x="125" y="170" font-size="14" fill="#ccc">alas (a)</text>
+                <text x="210" y="105" font-size="14" fill="#ccc">tinggi (b)</text>
+                <text x="100" y="80" font-size="14" fill="#8A2BE2" transform="rotate(-33.7 100 80)">Jarak (c)</text>
+            </svg>
+            <p style="font-size:0.9em; color:var(--text-secondary);">Jarak AB adalah sisi miring dari segitiga siku-siku ABC.</p>
+        </div>
+
+        <h2>2. Jarak Titik ke Garis</h2>
+        <p>
+            Jarak dari sebuah titik P ke sebuah garis $g$ adalah panjang ruas garis dari titik P yang ditarik <strong>tegak lurus</strong> ke garis $g$. Titik di mana garis tegak lurus itu memotong garis $g$ disebut proyeksi titik P pada garis $g$.
+        </p>
+        <p>
+            <strong>Strategi:</strong>
+        </p>
+        <ol>
+            <li>Bentuk sebuah segitiga yang melibatkan titik P dan dua titik pada garis $g$.</li>
+            <li>Proyeksikan titik P secara tegak lurus ke garis $g$, sebut titik proyeksinya P'. Jarak yang dicari adalah panjang PP'.</li>
+            <li>Gunakan luas segitiga, trigonometri, atau Pythagoras dalam segitiga yang terbentuk untuk mencari panjang PP'.</li>
+        </ol>
+        <div class="svg-container">
+            <svg width="250" height="150" viewBox="0 0 250 150" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="#1c1c1c"/>
+                <line x1="20" y1="100" x2="230" y2="100" stroke="#ccc" stroke-width="2"/>
+                <text x="235" y="105" font-size="16" fill="#ccc">g</text>
+                <circle cx="125" cy="40" r="5" fill="#f0f0f0"/><text x="118" y="35" font-size="16" fill="#f0f0f0">P</text>
+                <line x1="125" y1="40" x2="125" y2="100" stroke="#8A2BE2" stroke-width="3"/>
+                <circle cx="125" cy="100" r="3" fill="#8A2BE2"/><text x="130" y="115" font-size="16" fill="#ccc">P'</text>
+                <path d="M 125 90 L 135 90 L 135 100" fill="none" stroke="#8A2BE2" stroke-width="2"/>
+            </svg>
+             <p style="font-size:0.9em; color:var(--text-secondary);">Jarak P ke garis g adalah panjang ruas garis PP' yang tegak lurus.</p>
+        </div>
+        
+        <h2>3. Jarak Titik ke Bidang</h2>
+        <p>
+            Mirip dengan jarak titik ke garis, jarak dari sebuah titik P ke sebuah bidang $\alpha$ adalah panjang ruas garis dari P yang ditarik <strong>tegak lurus</strong> ke bidang $\alpha$.
+        </p>
+        <p>
+            <strong>Strategi:</strong>
+        </p>
+        <ol>
+            <li>Cari sebuah garis pada bidang $\alpha$ yang relevan dengan posisi titik P.</li>
+            <li>Proyeksikan titik P secara tegak lurus ke bidang $\alpha$, sebut titik proyeksinya P'. Jarak yang dicari adalah panjang PP'.</li>
+            <li>Biasanya, ini melibatkan pembentukan beberapa segitiga siku-siku untuk menemukan panjang PP'. Kuncinya adalah menemukan "jalur" Pythagoras yang paling efisien.</li>
+        </ol>
+        <div class="svg-container">
+             <svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="#1c1c1c"/>
+                <polygon points="50,150 250,150 280,80 80,80" fill="rgba(138, 43, 226, 0.1)" stroke="#ccc" stroke-width="2"/>
+                <text x="285" y="75" font-size="16" fill="#ccc">α</text>
+                <circle cx="160" cy="40" r="5" fill="#f0f0f0"/><text x="153" y="35" font-size="16" fill="#f0f0f0">P</text>
+                <line x1="160" y1="40" x2="180" y2="115" stroke="#8A2BE2" stroke-width="3"/>
+                <circle cx="180" cy="115" r="3" fill="#8A2BE2"/><text x="185" y="130" font-size="16" fill="#ccc">P'</text>
+             </svg>
+             <p style="font-size:0.9em; color:var(--text-secondary);">Jarak P ke bidang α adalah panjang ruas garis PP' yang tegak lurus.</p>
+        </div>
+
+        <div class="strategy-box">
+            <b>Pola Pikir Menyelesaikan Soal Jarak:</b>
+            <ol>
+                <li><strong>Visualisasikan:</strong> Langkah pertama dan terpenting adalah menggambar bangun ruangnya dan menandai titik, garis, atau bidang yang ditanyakan.</li>
+                <li><strong>Tentukan Ruas Garis Jarak:</strong> Tarik garis lurus terpendek (yang tegak lurus) dari titik ke objek yang dituju.</li>
+                <li><strong>Cari Segitiga Siku-siku:</strong> Temukan atau bentuk sebuah segitiga siku-siku di dalam bangun ruang yang memuat ruas garis jarak tersebut sebagai salah satu sisinya.</li>
+                <li><strong>Hitung dengan Pythagoras:</strong> Gunakan panjang rusuk yang diketahui untuk mencari panjang sisi-sisi lain dari segitiga siku-siku tersebut, lalu hitung jarak yang dicari.</li>
+            </ol>
+        </div>
+
+                <p>
+            Mempelajari jarak dalam ruang tiga dimensi (bangun ruang) adalah tentang membayangkan dan menarik garis. Kunci utamanya adalah mengubah masalah 3D menjadi masalah 2D yang bisa kita selesaikan, biasanya dengan menggunakan <strong>Teorema Pythagoras</strong>.
+        </p>
+        <blockquote>
+            Prinsip Dasar: Jarak terpendek antara dua objek geometris selalu berupa ruas garis lurus yang <b>tegak lurus</b>.
+        </blockquote>
+
+        <h2>1. Jarak Antara Dua Titik (Titik ke Titik)</h2>
+        <p>
+            Jarak antara titik A dan B adalah panjang ruas garis lurus yang menghubungkan keduanya. Strategi utamanya adalah menemukan segitiga siku-siku di mana ruas garis tersebut menjadi sisi miring.
+        </p>
+        <h3>Contoh Penerapan (Kubus ABCD.EFGH, Rusuk 8 cm)</h3>
+        <ol>
+            <li>
+                <strong>Jarak Titik A ke B (Jarak Langsung):</strong>
+                <p>Karena A dan B dihubungkan oleh rusuk kubus, jaraknya adalah panjang rusuk itu sendiri. Jadi, jarak A ke B = 8 cm. Ini adalah jarak terpendek karena sudah berupa garis lurus yang tegak lurus dengan bidang lain yang relevan.</p>
+            </li>
+            <li>
+                <strong>Jarak Titik A ke C (Menggunakan Pythagoras):</strong>
+                <p>Garis AC adalah diagonal sisi pada bidang alas ABCD. Untuk mencarinya, kita "potong" bidang alas dan lihat sebagai persegi 2D.</p>
+                <div class="svg-container">
+                    <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#1c1c1c"/><polygon points="30,170 170,170 170,30 30,30" fill="none" stroke="#ccc" stroke-width="2"/><path d="M 30 170 L 170 30" fill="none" stroke="#8A2BE2" stroke-width="3"/><text x="20" y="175" font-size="16" fill="#f0f0f0">A</text><text x="175" y="175" font-size="16" fill="#f0f0f0">B</text><text x="175" y="25" font-size="16" fill="#f0f0f0">C</text><text x="20" y="25" font-size="16" fill="#f0f0f0">D</text></svg>
+                </div>
+                <p>Perhatikan segitiga siku-siku ABC (siku-siku di B). Dengan Teorema Pythagoras:</p>
+                <p>$AC^2 = AB^2 + BC^2$</p>
+                <p>$AC^2 = 8^2 + 8^2 = 64 + 64 = 128$</p>
+                <p>$AC = \sqrt{128} = \sqrt{64 \times 2} = 8\sqrt{2}$ cm. (Ini adalah rumus cepat diagonal sisi: $s\sqrt{2}$)</p>
+            </li>
+        </ol>
+
+        <h2>2. Jarak Titik ke Garis</h2>
+        <p>
+            Jarak dari titik P ke garis $g$ adalah panjang ruas garis dari P yang ditarik <strong>tegak lurus</strong> ke garis $g$.
+        </p>
+        <h3>Contoh Penerapan (Kubus ABCD.EFGH, Rusuk 6 cm)</h3>
+        <p><strong>Soal:</strong> Tentukan jarak titik B ke garis AG (diagonal ruang).</p>
+        <div class="svg-container">
+    <svg width="350" height="300" viewBox="0 0 350 300" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100%" height="100%" fill="#1c1c1c"/>
+
+        <polygon points="50,250 250,250 300,200 100,200" fill="none" stroke="#555" stroke-width="1"/>
+        <line x1="50" y1="100" x2="250" y2="100" stroke="#555" stroke-width="1"/>
+        <line x1="300" y1="50" x2="100" y2="50" stroke="#555" stroke-width="1" stroke-dasharray="3"/>
+        <polygon points="250,100 300,50 300,200 250,250" fill="none" stroke="#555" stroke-width="1"/>
+        <line x1="50" y1="250" x2="50" y2="100" stroke="#555" stroke-width="1"/>
+        <line x1="100" y1="200" x2="100" y2="50" stroke="#555" stroke-width="1" stroke-dasharray="3"/>
+
+        <polygon points="50,250 250,250 300,50" fill="rgba(138, 43, 226, 0.1)" />
+        <line x1="50" y1="250" x2="250" y2="250" stroke="#8A2BE2" stroke-width="3"/> <line x1="250" y1="250" x2="300" y2="50" stroke="#8A2BE2" stroke-width="3"/> <line x1="50" y1="250" x2="300" y2="50" stroke="#8A2BE2" stroke-width="3"/> <line x1="250" y1="250" x2="133.3" y2="183.3" stroke="#F85149" stroke-width="2.5"/>
+        <path d="M 133.3 183.3 L 143.3 190.3 L 136.3 200.3" fill="none" stroke="#F85149" stroke-width="1.5"/>
+        
+        <text x="40" y="260" font-size="16" fill="#f0f0f0" font-weight="bold">A</text>
+        <text x="255" y="260" font-size="16" fill="#f0f0f0" font-weight="bold">B</text>
+        <text x="305" y="45" font-size="16" fill="#f0f0f0" font-weight="bold">G</text>
+        <text x="115" y="180" font-size="14" fill="#ccc">X</text>
+
+        <text x="140" y="265" font-size="14" fill="#ccc">AB = alas = 6</text>
+        <text x="285" y="160" font-size="14" fill="#ccc" transform="rotate(70 285 160)">BG = 6√2</text>
+        <text x="180" y="130" font-size="14" fill="#ccc" transform="rotate(-45 180 130)">AG = 3√6</text>
+    </svg>
+    <p style="font-size:0.9em; color:var(--text-secondary);">Visualisasi segitiga ABG di dalam kubus untuk mencari jarak B ke AG (t).</p>
+</div>
+        <ol>
+            <li><strong>Bentuk Segitiga:</strong> Hubungkan titik B, A, dan G untuk membentuk segitiga ABG.</li>
+            <li><strong>Identifikasi Sisi:</strong>
+                <ul>
+                    <li>$AB$ adalah rusuk = 6 cm.</li>
+                    <li>$BG$ adalah diagonal sisi = $6\sqrt{2}$ cm.</li>
+                    <li>$AG$ adalah diagonal ruang = $6\sqrt{3}$ cm.</li>
+                </ul>
+                Perhatikan bahwa segitiga ABG adalah segitiga siku-siku di B (karena rusuk AB tegak lurus dengan bidang BCGF, sehingga tegak lurus dengan semua garis di bidang itu, termasuk BG).
+            </li>
+            <li><strong>Gunakan Persamaan Luas Segitiga:</strong>
+                <p>Misalkan jarak dari B ke AG adalah $t$. Kita bisa menghitung luas segitiga ABG dengan dua cara:</p>
+                <p>$\frac{1}{2} \times \text{alas}_1 \times \text{tinggi}_1 = \frac{1}{2} \times \text{alas}_2 \times \text{tinggi}_2$</p>
+                <p>$\frac{1}{2} \times AB \times BG = \frac{1}{2} \times AG \times t$</p>
+                <p>$6 \times 6\sqrt{2} = 6\sqrt{3} \times t$</p>
+                <p>$t = \frac{36\sqrt{2}}{6\sqrt{3}} = \frac{6\sqrt{2}}{\sqrt{3}} = \frac{6\sqrt{6}}{3} = 2\sqrt{6}$ cm.</p>
+            </li>
+        </ol>
+
+        <h2>3. Jarak Titik ke Bidang</h2>
+        <p>
+            Jarak dari titik P ke bidang $\alpha$ adalah panjang ruas garis dari P yang ditarik <strong>tegak lurus</strong> ke bidang $\alpha$.
+        </p>
+        <h3>Contoh Penerapan (Kubus ABCD.EFGH, Rusuk 6 cm)</h3>
+        <p><strong>Soal:</strong> Tentukan jarak titik E ke bidang BDG.</p>
+        <ol>
+            <li><strong>Visualisasi:</strong> Bidang BDG adalah segitiga sama sisi. Jarak dari E ke bidang BDG akan jatuh di suatu titik P di dalam segitiga BDG. Jika kita tarik diagonal ruang EC, garis ini akan menembus bidang BDG secara tegak lurus.</li>
+             <div class="svg-container">
+                <svg width="250" height="250" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="100" fill="#1c1c1c"/>
+                    <polygon points="10,80 60,80 90,60 40,60" fill="none" stroke="#ccc" stroke-width="0.5"/>
+                    <line x1="10" y1="30" x2="60" y2="30" stroke="#ccc" stroke-width="0.5"/>
+                    <line x1="90" y1="10" x2="40" y2="10" stroke="#ccc" stroke-width="0.5" stroke-dasharray="2"/>
+                    <polygon points="60,30 90,10 90,60 60,80" fill="none" stroke="#ccc" stroke-width="0.5"/>
+                    <line x1="10" y1="80" x2="10" y2="30" stroke="#ccc" stroke-width="0.5"/>
+                    <line x1="40" y1="60" x2="40" y2="10" stroke="#ccc" stroke-width="0.5" stroke-dasharray="2"/>
+                    <polygon points="60,80 40,60 90,10" fill="rgba(138, 43, 226, 0.2)" stroke="#8A2BE2" stroke-width="1"/>
+                    <line x1="10" y1="30" x2="90" y2="60" stroke="#F85149" stroke-width="1.5" stroke-dasharray="2"/>
+                    <circle cx="63.3" cy="50" r="1.5" fill="#f0f0f0"/>
+                    <text x="5" y="28" font-size="5" fill="#f0f0f0">E</text><text x="92" y="65" font-size="5" fill="#f0f0f0">C</text>
+                    <text x="65" y="48" font-size="5" fill="#f0f0f0">P</text>
+                    <text x="58" y="85" font-size="5" fill="#f0f0f0">B</text><text x="35" y="58" font-size="5" fill="#f0f0f0">D</text><text x="92" y="10" font-size="5" fill="#f0f0f0">G</text>
+                </svg>
+             </div>
+            <li><strong>Gunakan Diagonal Ruang:</strong> Jarak dari E ke bidang BDG adalah sepertiga dari panjang diagonal ruang EC. (Demikian pula, jarak dari C ke bidang BDG adalah dua pertiga dari EC).</li>
+            <li><strong>Hitung:</strong>
+                <p>Panjang diagonal ruang EC = $s\sqrt{3} = 6\sqrt{3}$ cm.</p>
+                <p>Jarak E ke bidang BDG = $\frac{2}{3} \times \text{Panjang EC}$</p>
+                <p>$= \frac{2}{3} \times 6\sqrt{3} = 2\sqrt{3}$ cm.</p>
+            </li>
+        </ol>
+
+        <div class="strategy-box">
+            <b>Pola Pikir Menyelesaikan Soal Jarak:</b>
+            <ol>
+                <li><strong>Visualisasikan & Gambar:</strong> Ini adalah langkah paling krusial.</li>
+                <li><strong>Tentukan Ruas Garis Jarak:</strong> Tarik garis lurus terpendek (yang tegak lurus) dari titik ke objek yang dituju.</li>
+                <li><strong>Cari Segitiga Siku-siku Ajaib:</strong> Temukan segitiga di dalam bangun ruang yang memuat ruas garis jarak tersebut.</li>
+                <li><strong>Hitung dengan Pythagoras atau Luas:</strong> Gunakan alat yang paling efisien untuk mencari panjang ruas garis tersebut.</li>
+            </ol>
+        </div>
+
+        <button id="finish-reading-btn" class="finish-button">
+            <i class="fas fa-check-circle"></i> Saya Sudah Selesai Membaca
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- KONFIGURASI DARI ATAS HALAMAN ---
+            const ROADMAP_PATH = 'index.html'; // Sesuaikan dengan path ke halaman roadmap Anda
+
+            const finishBtn = document.getElementById('finish-reading-btn');
+            const finishModal = document.querySelector('#finish-modal'); // Akan di-generate jika tidak ada
+            const successModal = document.querySelector('#success-modal'); // Akan di-generate jika tidak ada
+
+            // Logika untuk tombol penjelasan (jika ada)
+            document.querySelectorAll('.explainer-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    button.classList.toggle('active');
+                    const content = button.nextElementSibling;
+                    const isOpening = content.classList.contains('hidden');
+                    content.classList.toggle('hidden');
+                    if (isOpening) {
+                        if(window.MathJax) { MathJax.typesetPromise([content]); }
+                    }
+                });
+            });
+
+            // Logika Tombol Selesai (dengan pembuatan modal jika belum ada)
+            if (finishBtn) {
+                finishBtn.addEventListener('click', () => {
+                    const modal = document.getElementById('finish-modal') || createFinishModal();
+                    modal.classList.add('active');
+                });
+            }
+
+            function createFinishModal() {
+                const modalHTML = `
+                <div id="finish-modal" class="modal-overlay">
+                    <div class="modal-content">
+                        <h3>Konfirmasi Penyelesaian</h3>
+                        <p>Apakah Anda sudah selesai membaca dan memahami seluruh materi ini?</p>
+                        <p style="font-size: 0.9rem; color: #888;">Progress Anda akan disimpan dan tahapan berikutnya akan terbuka.</p>
+                        <div class="modal-footer">
+                            <button id="cancel-finish-btn" style="background-color: #555; color: white;">Belum</button>
+                            <button id="confirm-finish-btn" class="confirm-btn">Ya, Sudah Selesai</button>
+                        </div>
+                    </div>
+                </div>`;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                document.getElementById('cancel-finish-btn').addEventListener('click', () => document.getElementById('finish-modal').classList.remove('active'));
+                document.getElementById('confirm-finish-btn').addEventListener('click', handleConfirmFinish);
+                return document.getElementById('finish-modal');
+            }
+            
+            function createSuccessModal() {
+                 const modalHTML = `
+                <div id="success-modal" class="modal-overlay">
+                    <div class="modal-content">
+                        <div class="success-icon">✅</div>
+                        <h3>Materi Selesai!</h3>
+                        <p>Progress Anda telah disimpan. Tahapan berikutnya sudah terbuka.</p>
+                        <p style="font-weight: 600; color: var(--accent-green);">Anda akan diarahkan kembali...</p>
+                    </div>
+                </div>`;
+                 document.body.insertAdjacentHTML('beforeend', modalHTML);
+                 return document.getElementById('success-modal');
+            }
+
+            function handleConfirmFinish() {
+                const storageKey = `progress_${subMateriId}_${thisStageId}`;
+                localStorage.setItem(storageKey, 'completed');
+                console.log(`Progress saved: ${storageKey} = completed`);
+
+                const finishModal = document.getElementById('finish-modal');
+                if (finishModal) finishModal.classList.remove('active');
+                
+                const successModal = document.getElementById('success-modal') || createSuccessModal();
+                successModal.classList.add('active');
+
+                setTimeout(() => {
+                    window.location.href = ROADMAP_PATH;
+                }, 2000);
+            }
+            
+            // Event listener untuk modal yang sudah ada
+            const confirmBtn = document.getElementById('confirm-finish-btn');
+            const cancelBtn = document.getElementById('cancel-finish-btn');
+            if(confirmBtn) confirmBtn.addEventListener('click', handleConfirmFinish);
+            if(cancelBtn) cancelBtn.addEventListener('click', () => document.getElementById('finish-modal').classList.remove('active'));
+        });
+    </script>
+</body>
+</html>
