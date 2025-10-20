@@ -7,13 +7,17 @@
 
     <script>
         // --- KONFIGURASI PENTING UNTUK HALAMAN INI ---
-        const subMateriId = 'log_2';       // ID Peta Belajar Induk (Sifat Logaritma)
-        const thisStageId = 'ujian';       // ID Tahap INI
-        const previousStageId = 'latihan3';// ID Tahap SEBELUMNYA
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwtP8HaiUAQdEPuxKh-hQ9_3WlN0MHgaLtidS1XJykKU1tFmvF1exfdrgaZJY1rCs/exec"; // Ganti jika perlu
+        const subMateriId = 'log_2';
+        const thisStageId = 'ujian';
+        const previousStageId = 'latihan3';
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwtP8HaiUAQdEPuxKh-hQ9_3WlN0MHgaLtidS1XJykKU1tFmvF1exfdrgaZJY1rCs/exec";
+        
+        // --- KONFIGURASI TELEGRAM BOT ---
+        // ⚠️ GANTI DENGAN TOKEN DAN CHAT ID ANDA ⚠️
+        const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';
+        const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';
         // ----------------------------------------------
 
-        // Script keamanan - dijalankan setelah DOM ready
         window.addEventListener('DOMContentLoaded', function() {
             const loggedInUserData = sessionStorage.getItem('loggedInUser');
             if (!loggedInUserData) {
@@ -32,6 +36,79 @@
             }
             document.body.style.visibility = 'visible';
         });
+
+        // --- FUNGSI KIRIM NOTIFIKASI KE TELEGRAM ---
+        async function sendToTelegram(message) {
+            if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE') {
+                console.warn('⚠️ Token Telegram belum dikonfigurasi');
+                return false;
+            }
+            
+            try {
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.ok) {
+                    console.log('✅ Notifikasi berhasil dikirim ke Telegram');
+                    return true;
+                } else {
+                    console.error('❌ Gagal mengirim ke Telegram:', result.description);
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Error saat mengirim ke Telegram:', error);
+                return false;
+            }
+        }
+
+        function formatTelegramMessage(userData, level, score, passed, status) {
+            const emoji = passed ? '✅' : '❌';
+            const statusEmoji = status === 'LULUS_LEVEL' ? '🎉' : 
+                               status === 'GUGUR' ? '💔' : 
+                               status === 'SELESAI_SEMUA' ? '🏆' : '📝';
+            
+            let message = `${statusEmoji} <b>HASIL UJIAN LOGARITMA</b> ${statusEmoji}\n\n`;
+            message += `👤 <b>Nama:</b> ${userData.name || 'Unknown'}\n`;
+            message += `📧 <b>Email:</b> ${userData.email || 'Unknown'}\n`;
+            message += `📊 <b>Level:</b> ${level}\n`;
+            message += `${emoji} <b>Status:</b> ${passed ? 'LULUS' : 'GAGAL'}\n`;
+            message += `💯 <b>Skor:</b> ${score.toFixed(0)}%\n`;
+            message += `✓ <b>Benar:</b> ${Math.round((score / 100) * 5)} dari 5 soal\n\n`;
+            
+            message += `📈 <b>Statistik ${level}:</b>\n`;
+            message += `   • Lulus: ${state.passCount[level]}/2\n`;
+            message += `   • Sisa Percobaan: ${state.attempts[level]}\n`;
+            message += `   • Gagal Beruntun: ${state.consecutiveFails[level]}/3\n\n`;
+            
+            if (status === 'GUGUR') {
+                message += `❌ <b>STATUS: GUGUR</b>\n`;
+                message += `Siswa telah ${state.consecutiveFails[level] >= 3 ? 'gagal 3x berturut-turut' : 'kehabisan percobaan'}\n`;
+            } else if (status === 'LULUS_LEVEL') {
+                message += `✅ <b>Level ${level} selesai!</b>\n`;
+                const nextLevel = level === 'LOTS' ? 'MOTS' : (level === 'MOTS' ? 'HOTS' : 'SELESAI');
+                if (nextLevel !== 'SELESAI') {
+                    message += `🔓 Level ${nextLevel} telah terbuka\n`;
+                }
+            } else if (status === 'SELESAI_SEMUA') {
+                message += `🏆 <b>SELAMAT!</b>\n`;
+                message += `Siswa telah menyelesaikan seluruh ujian Sifat-Sifat Logaritma!\n`;
+            }
+            
+            message += `\n⏰ <b>Waktu:</b> ${new Date().toLocaleString('id-ID')}`;
+            
+            return message;
+        }
     </script>
     <link rel="icon" type="image/png" href="../UMT-Logo - Copy.png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
