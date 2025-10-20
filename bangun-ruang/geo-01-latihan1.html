@@ -7,9 +7,9 @@
 
     <script>
         // --- KONFIGURASI PENTING UNTUK HALAMAN INI ---
-        const subMateriId = 'geo_1';      // ID Peta Belajar Induk (sesuai materi)
-        const thisStageId = 'latihan1';   // ID Tahap INI
-        const previousStageId = 'materi';   // ID Tahap SEBELUMNYA
+        const subMateriId = 'geo_1';     // ID Peta Belajar Induk (sesuai materi)
+        const thisStageId = 'latihan1';  // ID Tahap INI
+        const previousStageId = 'materi';  // ID Tahap SEBELUMNYA
         // URL Web App Google Apps Script untuk pengiriman (jika digunakan)
         // const GAS_WEB_APP_URL = "URL_WEB_APP_ANDA"; 
         // ----------------------------------------------
@@ -292,7 +292,7 @@
             // ============ KONFIGURASI PROGRESS ============
             const SUB_MATERI_ID = "geo_1";
             const CURRENT_STAGE_ID = "latihan1";
-            const ROADMAP_PATH = "../bangun-ruang/";
+            const ROADMAP_PATH = "../bangun-ruang/"; // Sesuaikan path ini
             // ==============================================
 
             const fileInput = document.getElementById('combined_upload');
@@ -302,15 +302,15 @@
             const cancelSubmitBtn = document.getElementById('cancel-submit-btn');
             const warningModal = document.getElementById('warning-modal');
             const closeWarningBtn = document.getElementById('close-warning-btn');
-            const backWarningModal = document.getElementById('back-warning-modal');
-            const closeBackWarningBtn = document.getElementById('close-back-warning-btn');
             const successModal = document.getElementById('success-modal');
-            // Tombol unduh tidak perlu di-handle JavaScript lagi
-            // const downloadPdfModalBtn = document.getElementById('download-pdf-modal-btn'); 
-            const skipToRoadmapBtn = document.getElementById('skip-to-roadmap-btn');
+            const continueToRoadmapBtn = document.getElementById('continue-to-roadmap-btn');
             const countdownElement = document.getElementById('countdown');
-            const backLink = document.getElementById('back-link');
+            const backLink = document.querySelector('.back-link'); // <-- PERBAIKAN: Menggunakan querySelector untuk class
             const toast = document.getElementById('toast');
+            
+            // Variabel dan logika untuk backWarningModal dinonaktifkan karena elemen HTML-nya tidak ada
+            // const backWarningModal = document.getElementById('back-warning-modal');
+            // const closeBackWarningBtn = document.getElementById('close-back-warning-btn');
             
             let isSubmitted = false;
             let countdownInterval = null;
@@ -341,19 +341,22 @@
                 }
             });
 
-            // Cegah kembali jika belum submit
+            // Cegah kembali jika belum submit (LOGIKA INI DISEMPURNAKAN)
             backLink.addEventListener('click', (e) => {
-                e.preventDefault();
                 if (!isSubmitted) {
-                    backWarningModal.classList.add('active');
-                } else {
-                    window.location.href = ROADMAP_PATH;
+                    e.preventDefault(); // Mencegah pindah halaman
+                    // Logika untuk menampilkan modal peringatan kembali dinonaktifkan
+                    // karena elemen HTML 'back-warning-modal' tidak ada.
+                    // Anda bisa menambahkan notifikasi toast sebagai gantinya.
+                    showNotification('Harap selesaikan dan kirim latihan terlebih dahulu.', 'error');
                 }
+                // Jika sudah submit (isSubmitted = true), link akan berfungsi normal tanpa perlu else
             });
 
-            closeBackWarningBtn.addEventListener('click', () => {
-                backWarningModal.classList.remove('active');
-            });
+            // Logika untuk closeBackWarningBtn dinonaktifkan
+            // closeBackWarningBtn.addEventListener('click', () => {
+            //     backWarningModal.classList.remove('active');
+            // });
 
             // Tampilkan modal konfirmasi saat tombol kirim diklik
             submitButton.addEventListener('click', () => {
@@ -392,8 +395,8 @@
             // Fungsi kirim ke Telegram
             async function kirimKeTelegram(formData) {
                 // ============ KONFIGURASI BOT TELEGRAM ============
-                const BOT_TOKEN = '8386335553:AAGDw3mqCWGgZCUL4kUZ198nIb00Jv3tQoQ';
-                const CHAT_ID = '6919363709';
+                const BOT_TOKEN = '8386335553:AAGDw3mqCWGgZCUL4kUZ198nIb00Jv3tQoQ'; // Ganti dengan Token Bot Anda
+                const CHAT_ID = '6919363709'; // Ganti dengan Chat ID Anda
                 // ==================================================
 
                 try {
@@ -462,10 +465,8 @@
                 }
             }
 
-            // Fungsi generatePDF sudah dihapus karena tidak diperlukan lagi
-
-            // Tombol skip langsung ke roadmap
-            skipToRoadmapBtn.addEventListener('click', () => {
+            // Tombol di modal sukses untuk lanjut ke roadmap
+            continueToRoadmapBtn.addEventListener('click', () => {
                 clearInterval(countdownInterval);
                 window.location.href = ROADMAP_PATH;
             });
